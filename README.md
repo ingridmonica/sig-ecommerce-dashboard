@@ -7,7 +7,7 @@
 
 > Dashboard analítico empresarial completo para análise de dados de e-commerce com geração automática de insights e visualizações interativas.
 
-![Dashboard Preview](assets/dashboard-preview.png)
+![Dashboard Preview](assets/dashboard.png)
 
 ## 🎯 Sobre o Projeto
 
@@ -26,34 +26,34 @@ O sistema transforma dados brutos de vendas em informações estratégicas atrav
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 ### 📊 Análises Completas
 
-- ✅ **5 KPIs Principais:** Pedidos, Receita, Clientes, Itens Vendidos, Ticket Médio
-- ✅ **4 Métricas Complementares:** Recorrência, Crescimento, Itens/Pedido, Valor/Item
-- ✅ **Evolução Temporal:** Gráficos de linha e barras com tendências mensais
-- ✅ **Análise de Produtos:** Top categorias, participação percentual, preço médio
-- ✅ **Distribuição Geográfica:** Análise por estado e cidade com mapas de calor
-- ✅ **Métodos de Pagamento:** Distribuição e receita por método
+- **5 KPIs Principais:** Pedidos, Receita, Clientes, Itens Vendidos, Ticket Médio
+- **4 Métricas Complementares:** Recorrência, Crescimento, Itens/Pedido, Valor/Item
+- **Evolução Temporal:** Gráficos de linha e barras com tendências mensais
+- **Análise de Produtos:** Top categorias, participação percentual, preço médio
+- **Distribuição Geográfica:** Análise por estado e cidade com mapas de calor
+- **Métodos de Pagamento:** Distribuição e receita por método
 
 ### 💡 Insights Automáticos
 
-- 🎯 **Crescimento/Queda:** Detecta variações significativas nas vendas
-- 📍 **Concentração Geográfica:** Identifica oportunidades de expansão
-- 🏆 **Performance de Produtos:** Destaca categorias líderes
-- 💰 **Oportunidades de Ticket:** Sugere estratégias de upselling
-- 👥 **Taxa de Recorrência:** Alerta sobre fidelização de clientes
-- 💳 **Preferências de Pagamento:** Análise de métodos dominantes
+- **Crescimento/Queda:** Detecta variações significativas nas vendas
+- **Concentração Geográfica:** Identifica oportunidades de expansão
+- **Performance de Produtos:** Destaca categorias líderes
+- **Oportunidades de Ticket:** Sugere estratégias de upselling
+- **Taxa de Recorrência:** Alerta sobre fidelização de clientes
+- **Preferências de Pagamento:** Análise de métodos dominantes
 
 ### 🔍 Recursos Avançados
 
-- 📅 **Filtros Dinâmicos:** Por período e estado com atualização em tempo real
-- 📁 **Upload Flexível:** Suporte a múltiplos formatos (UTF-8, Latin1, ISO-8859-1)
-- 📜 **Histórico de Uploads:** Rastreamento de todas as importações
-- 🔧 **Modo Debug:** Ferramenta para desenvolvedores identificarem problemas
-- 🎨 **Interface Empresarial:** Design profissional com gradientes e cards coloridos
-- 📱 **Responsivo:** Funciona em desktop, tablet e mobile
+- **Filtros Dinâmicos:** Por período e estado com atualização em tempo real
+- **Upload Flexível:** Suporte a múltiplos formatos (UTF-8, Latin1, ISO-8859-1)
+- **Histórico de Uploads:** Rastreamento de todas as importações
+- **Modo Debug:** Ferramenta para desenvolvedores identificarem problemas
+- **Interface Empresarial:** Design profissional com gradientes e cards coloridos
+- **Responsivo:** Funciona em desktop, tablet e mobile
 
 ---
 
@@ -206,9 +206,11 @@ sig-ecommerce-dashboard/
 ├── LICENSE                         # Licença MIT
 │
 ├── assets/                         # Recursos visuais
-│   ├── dashboard-preview.png
-│   └── logo-ifal.png
+│   └── dashboard.png
 │
+├── docs/                           # Documentação
+│   └── TROUBLESHOOTING_UPLOAD.md
+|
 └── .gitignore                      # Arquivos ignorados pelo Git
 ```
 
