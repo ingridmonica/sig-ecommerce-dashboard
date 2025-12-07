@@ -1,56 +1,86 @@
 # 📊 Sistema de Informações Gerenciais para E-commerce
 
-**Disciplina:** Sistemas de Informações Gerenciais  
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-red.svg)](https://streamlit.io/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![IFAL](https://img.shields.io/badge/IFAL-2025.1-orange.svg)](https://www2.ifal.edu.br/)
+
+> Dashboard analítico empresarial completo para análise de dados de e-commerce com geração automática de insights e visualizações interativas.
+
+![Dashboard Preview](assets/dashboard-preview.png)
+
+## 🎯 Sobre o Projeto
+
+Este Sistema de Informações Gerenciais (SIG) foi desenvolvido como projeto final da disciplina de Sistemas de Informações Gerenciais do **IFAL - Instituto Federal de Alagoas**, sob orientação da **Professora Wladia Bessa**.
+
+O sistema transforma dados brutos de vendas em informações estratégicas através de dashboards interativos, KPIs em tempo real e insights automáticos com recomendações acionáveis.
+
+### 👥 Autoras
+
+- **Ingrid Mônica da Silva Bezerra**
+- **Karla Cristina de Sousa Araújo**
+
 **Instituição:** IFAL - Instituto Federal de Alagoas  
 **Período:** 2025.1  
-**Autoras:** Ingrid Mônica da Silva Bezerra e Karla Cristina de Sousa Araújo  
-**Professora:** Wladia Bessa
+**Disciplina:** Sistemas de Informações Gerenciais
 
 ---
 
-## Descrição do Projeto
+## ✨ Funcionalidades
 
-Dashboard analítico que aplica conceitos de Sistema de Informação Gerencial (SIG) através da análise de dados de e-commerce, transformando dados brutos em informações estratégicas para apoio à tomada de decisão empresarial.
+### 📊 Análises Completas
+
+- ✅ **5 KPIs Principais:** Pedidos, Receita, Clientes, Itens Vendidos, Ticket Médio
+- ✅ **4 Métricas Complementares:** Recorrência, Crescimento, Itens/Pedido, Valor/Item
+- ✅ **Evolução Temporal:** Gráficos de linha e barras com tendências mensais
+- ✅ **Análise de Produtos:** Top categorias, participação percentual, preço médio
+- ✅ **Distribuição Geográfica:** Análise por estado e cidade com mapas de calor
+- ✅ **Métodos de Pagamento:** Distribuição e receita por método
+
+### 💡 Insights Automáticos
+
+- 🎯 **Crescimento/Queda:** Detecta variações significativas nas vendas
+- 📍 **Concentração Geográfica:** Identifica oportunidades de expansão
+- 🏆 **Performance de Produtos:** Destaca categorias líderes
+- 💰 **Oportunidades de Ticket:** Sugere estratégias de upselling
+- 👥 **Taxa de Recorrência:** Alerta sobre fidelização de clientes
+- 💳 **Preferências de Pagamento:** Análise de métodos dominantes
+
+### 🔍 Recursos Avançados
+
+- 📅 **Filtros Dinâmicos:** Por período e estado com atualização em tempo real
+- 📁 **Upload Flexível:** Suporte a múltiplos formatos (UTF-8, Latin1, ISO-8859-1)
+- 📜 **Histórico de Uploads:** Rastreamento de todas as importações
+- 🔧 **Modo Debug:** Ferramenta para desenvolvedores identificarem problemas
+- 🎨 **Interface Empresarial:** Design profissional com gradientes e cards coloridos
+- 📱 **Responsivo:** Funciona em desktop, tablet e mobile
 
 ---
 
-## 🎯 Objetivos
+## 🚀 Tecnologias Utilizadas
 
-### Objetivo Geral
-Desenvolver um Dashboard Analítico utilizando tecnologias modernas para simular o processo de transformação de dados em informações estratégicas.
-
-### Objetivos Específicos
-1. Implementar um SIG completo com coleta, processamento e apresentação de dados
-2. Calcular e apresentar KPIs essenciais para gestão de e-commerce
-3. Desenvolver visualizações gerenciais interativas
-4. Gerar insights automatizados para apoio à decisão estratégica
-
----
-
-## Tecnologias Utilizadas
-
-- **Python 3.8+** - Linguagem de programação
-- **Streamlit** - Framework para interface web
-- **Pandas** - Processamento e análise de dados
-- **Plotly** - Visualizações interativas
-- **NumPy** - Computação numérica
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| **Python** | 3.8+ | Linguagem principal |
+| **Streamlit** | 1.31.0 | Framework web para dashboards |
+| **Pandas** | 2.1.4 | Processamento e análise de dados |
+| **Plotly** | 5.18.0 | Visualizações interativas |
+| **NumPy** | 1.26.3 | Computação numérica |
 
 ---
 
 ## 📦 Instalação
 
 ### Pré-requisitos
-- Python 3.8 ou superior instalado
+
+- Python 3.8 ou superior
 - pip (gerenciador de pacotes Python)
 
-### Passo 1: Clone ou baixe o projeto
+### Passo 1: Clone o repositório
 
 ```bash
-# Se estiver usando Git
-git clone [url-do-repositorio]
-cd sig-ecommerce
-
-# Ou simplesmente baixe e extraia os arquivos
+git clone https://github.com/seu-usuario/sig-ecommerce-dashboard.git
+cd sig-ecommerce-dashboard
 ```
 
 ### Passo 2: Crie um ambiente virtual (recomendado)
@@ -73,230 +103,257 @@ pip install -r requirements.txt
 
 ---
 
-## 🎮 Como Executar
+## 🎮 Como Usar
 
-### Método 1: Execução Direta
+### Método 1: Execução Local
 
 ```bash
 streamlit run app.py
 ```
 
-O sistema abrirá automaticamente no navegador em `http://localhost:8501`
+O dashboard abrirá automaticamente em `http://localhost:8501`
 
-### Método 2: Especificando porta
+### Método 2: Com Porta Específica
 
 ```bash
 streamlit run app.py --server.port 8080
 ```
 
----
+### Método 3: Modo Headless (Servidor)
 
-## 📊 Funcionalidades
-
-### Requisitos Funcionais Implementados
-
-| Código | Descrição | Status |
-|--------|-----------|--------|
-| RF01 | Permitir upload de arquivo CSV padronizado | ✅ |
-| RF02 | Validar colunas obrigatórias do arquivo | ✅ |
-| RF03 | Calcular KPIs principais (pedidos, receita, clientes, ticket médio) | ✅ |
-| RF04 | Exibir dashboards interativos | ✅ |
-| RF05 | Gerar insights automáticos | ✅ |
-| RF06 | Permitir uso de dados de exemplo | ✅ |
-
-### 📈 KPIs Disponíveis
-
-1. **Total de Pedidos** - Quantidade total de transações
-2. **Receita Total** - Valor agregado de todas as vendas
-3. **Clientes Únicos** - Número de clientes diferentes
-4. **Ticket Médio** - Valor médio por transação
-
-### Visualizações
-
-- **Vendas no Tempo** - Gráfico de linha com evolução temporal
-- **Métodos de Pagamento** - Gráfico de pizza com distribuição
-- **Top Categorias** - Gráfico de barras com categorias mais rentáveis
-- **Distribuição Geográfica** - Análise por estado
-
-### 💡 Insights Automáticos
-
-O sistema gera automaticamente:
-- Análise de concentração geográfica
-- Performance de categorias vs média
-- Tendências de crescimento/queda
-- Taxa de recorrência de clientes
-- Padrões de pagamento
-
----
-
-## 📁 Estrutura de Arquivos
-
-```
-sig-ecommerce/
-│
-├── app.py                 # Aplicação principal
-├── requirements.txt       # Dependências do projeto
-├── README.md             # Este arquivo
-│
-├── data/                # Pasta para arquivos CSV
-│   └── exemplo.csv
-│
-└── docs/                 # Documentação do projeto
-    ├── Estudo de Viabilidade.pdf
-    └── Levantamento de Requisitos.pdf
+```bash
+streamlit run app.py --server.headless true
 ```
 
 ---
 
-## 📝 Formato do Arquivo CSV
+## 📊 Formato dos Dados
 
 ### Colunas Obrigatórias
 
+O sistema aceita arquivos CSV com as seguintes colunas:
+
+| Coluna | Tipo | Descrição | Exemplo |
+|--------|------|-----------|---------|
+| `order_id` | String | ID único do pedido | ORD_001 |
+| `customer_id` | String | ID do cliente | CUST_001 |
+| `order_date` | Date | Data do pedido | 2024-01-15 |
+| `product_category` | String | Categoria do produto | Eletrônicos |
+| `product_price` | Float | Preço unitário | 299.90 |
+| `quantity` | Integer | Quantidade | 2 |
+| `total_value` | Float | Valor total | 599.80 |
+| `customer_state` | String | Estado (UF) | SP |
+| `customer_city` | String | Cidade | São Paulo |
+| `payment_method` | String | Método de pagamento | Cartão de Crédito |
+
+### Exemplo de CSV
+
 ```csv
-order_id,order_date,customer_id,total_value,payment_method
-ORD00001,2024-01-15,CUST0001,1500.00,Cartão de Crédito
-ORD00002,2024-01-16,CUST0002,500.00,PIX
+order_id,customer_id,order_date,product_category,product_price,quantity,total_value,customer_state,customer_city,payment_method
+ORD_001,CUST_001,2024-01-15,Eletrônicos,299.90,1,299.90,SP,São Paulo,Cartão de Crédito
+ORD_002,CUST_002,2024-01-16,Moda,89.50,2,179.00,RJ,Rio de Janeiro,PIX
+ORD_003,CUST_003,2024-01-17,Casa e Decoração,149.90,1,149.90,MG,Belo Horizonte,Boleto
 ```
 
-### Colunas Opcionais (para análises avançadas)
+### Formatos Aceitos
 
-- `customer_state` - Estado do cliente (ex: SP, RJ, MG)
-- `customer_city` - Cidade do cliente
-- `product_category` - Categoria do produto
-- `product_price` - Preço unitário
-- `quantity` - Quantidade
+- **Separadores:** `,` (vírgula), `;` (ponto-e-vírgula), `\t` (tab), `|` (pipe)
+- **Encodings:** UTF-8, Latin1, ISO-8859-1, CP1252
+- **Formatos de Data:** YYYY-MM-DD, DD/MM/YYYY
 
-### Exemplo Completo
+---
 
-```csv
-order_id,order_date,customer_id,customer_state,customer_city,product_category,product_price,quantity,total_value,payment_method
-ORD00001,2024-01-15,CUST0001,SP,São Paulo,Eletrônicos,1500.00,1,1500.00,Cartão de Crédito
-ORD00002,2024-01-16,CUST0002,RJ,Rio de Janeiro,Moda,250.00,2,500.00,PIX
-ORD00003,2024-01-17,CUST0003,MG,Belo Horizonte,Casa e Decoração,800.00,1,800.00,Boleto
+## 🎯 Exemplos de Uso
+
+### 1. Carregar Dados de Exemplo
+
+```python
+# No dashboard, clique em:
+"🧪 Usar Dados de Exemplo"
+```
+
+Isso carregará 5.000 registros fictícios para demonstração.
+
+### 2. Upload de CSV
+
+1. Na sidebar, insira o nome da empresa
+2. Clique em "Selecione o arquivo CSV"
+3. Escolha seu arquivo
+4. Aguarde o processamento (2-5 segundos)
+5. Dashboard será exibido automaticamente
+
+### 3. Aplicar Filtros
+
+```python
+# Expanda "🔍 Filtros Avançados"
+# Selecione:
+- Período: Data início e data fim
+- Estados: Um ou múltiplos estados
+```
+
+Os gráficos e KPIs atualizam automaticamente.
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+sig-ecommerce-dashboard/
+│
+├── app.py                          # Aplicação principal
+├── requirements.txt                # Dependências
+├── README.md                       # Este arquivo
+├── LICENSE                         # Licença MIT
+│
+├── assets/                         # Recursos visuais
+│   ├── dashboard-preview.png
+│   └── logo-ifal.png
+│
+└── .gitignore                      # Arquivos ignorados pelo Git
 ```
 
 ---
 
-## Como Usar o Sistema
+## 🎓 Fundamentação Teórica
 
-### 1. Iniciando
+### O que é um SIG?
 
-1. Execute o comando `streamlit run app.py`
-2. O navegador abrirá automaticamente
+Um **Sistema de Informações Gerenciais** é um processo de transformação de dados em informações utilizadas na estrutura decisória da empresa, proporcionando sustentação administrativa para otimizar resultados e alcançar metas.
 
-### 2. Carregando Dados
+### Características Implementadas
 
-**Opção A - Dados de Exemplo:**
-- Na barra lateral, selecione "Usar dados de exemplo"
-- Clique em "Carregar Dados de Exemplo"
-- 150 registros fictícios serão carregados automaticamente
+✅ **Banco de dados integrados** - Consolida múltiplas dimensões de análise  
+✅ **Interface amigável** - Dashboard intuitivo com visualizações claras  
+✅ **Apoio ao planejamento** - KPIs e métricas para monitoramento  
+✅ **Suporte à decisão** - Insights automáticos com recomendações
 
-**Opção B - Upload de CSV:**
-- Na barra lateral, selecione "Upload de arquivo CSV"
-- Clique em "Browse files" e selecione seu arquivo
-- O sistema validará as colunas automaticamente
+### Etapas do SIG
 
-### 3. Aplicando Filtros
-
-- **Período**: Selecione data início e data fim
-- **Estado**: Filtre por estado específico ou veja todos
-- **Limpar Filtros**: Restaura visualização completa
-
-### 4. Navegando pelas Abas
-
-**📈 Visão Geral:**
-- Visualize KPIs principais
-- Analise gráficos interativos
-- Explore tendências temporais
-
-**💡 Insights:**
-- Veja análises automáticas
-- Receba recomendações estratégicas
-- Entenda os critérios de geração
+1. **Coleta de Dados** → Upload de CSV padronizado
+2. **Processamento** → Validação, limpeza e transformação
+3. **Armazenamento** → Estrutura em memória otimizada
+4. **Distribuição** → Dashboards e visualizações interativas
+5. **Tomada de Decisão** → Insights automáticos acionáveis
 
 ---
 
-## 🔧 Solução de Problemas
+## 🐛 Troubleshooting
 
-### Erro: "ModuleNotFoundError"
+### Problema: "Erro ao carregar CSV"
+
+**Solução:**
+
+1. Verifique se o arquivo tem todas as colunas obrigatórias
+2. Confirme o formato das datas (YYYY-MM-DD)
+3. Remova caracteres especiais dos nomes das colunas
+4. Consulte: `docs/TROUBLESHOOTING_UPLOAD.md`
+
+### Problema: "Fica carregando infinitamente"
+
+**Solução:**
+
+1. Ative o modo debug na sidebar
+2. Verifique se há registros com datas inválidas
+3. Teste com o CSV de exemplo primeiro
+4. Veja logs detalhados no terminal
+
+### Problema: "Gráficos não aparecem"
+
+**Solução:**
 
 ```bash
-# Certifique-se de instalar as dependências
-pip install -r requirements.txt
+pip uninstall plotly
+pip install plotly==5.18.0
+streamlit cache clear
 ```
-
-### Erro: "Port already in use"
-
-```bash
-# Use outra porta
-streamlit run app.py --server.port 8080
-```
-
-### Erro ao carregar CSV
-
-- Verifique se o arquivo está no formato UTF-8
-- Confirme que as colunas obrigatórias estão presentes
-- Certifique-se de usar vírgula (,) como separador
 
 ---
 
-## 📊 Exemplos de Análise
+## 📊 Exemplos de Análises
 
-### Cenário 1: Identificar Principais Mercados
-1. Carregue os dados
-2. Vá para "Visão Geral"
-3. Analise o gráfico "Distribuição por Estado"
-4. Verifique os insights geográficos
+### Análise 1: Identificar Principais Mercados
 
-### Cenário 2: Avaliar Crescimento
-1. Filtre por período específico
-2. Observe o gráfico "Vendas no Tempo"
-3. Vá para aba "Insights"
-4. Veja análise de crescimento/queda
+1. Acesse a aba "🗺️ Geografia"
+2. Veja o gráfico "Top Estados por Receita"
+3. Identifique concentração geográfica
+4. Use insights para planejar expansão
 
-### Cenário 3: Otimizar Mix de Produtos
-1. Analise "Top Categorias"
-2. Compare ticket médio por categoria
-3. Use insights para priorizar investimentos
+### Análise 2: Avaliar Performance de Produtos
+
+1. Acesse a aba "🏆 Produtos"
+2. Analise "Top Categorias por Receita"
+3. Compare participação percentual
+4. Identifique oportunidades de cross-selling
+
+### Análise 3: Monitorar Crescimento
+
+1. Acesse "📈 Evolução Temporal"
+2. Observe tendência mensal
+3. Verifique crescimento percentual
+4. Compare ticket médio ao longo do tempo
+
+---
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+5. Abra um Pull Request
+
+### Diretrizes
+
+- Siga o padrão PEP 8 para código Python
+- Adicione docstrings para funções novas
+- Teste suas alterações antes de submeter
+- Atualize a documentação se necessário
+
+---
+
+## Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
 ## 📚 Referências
 
-- **ABComm** - Associação Brasileira de Comércio Eletrônico
-- **Dataset Olist** - Brazilian E-Commerce Public Dataset
-- **Streamlit Documentation** - https://docs.streamlit.io
-- **Plotly Python** - https://plotly.com/python/
+- **ABComm** - Associação Brasileira de Comércio Eletrônico. [Relatório Setorial 2023](https://ecommercebrasil.com.br/noticias/compras-on-line-atingem-r-1857-bilhoes-no-brasil-em-2023-revela-abcomm)
+- **Dataset Olist** - Brazilian E-Commerce Public Dataset. [Kaggle](https://www.kaggle.com/olistbr)
+- **Streamlit Documentation** - [docs.streamlit.io](https://docs.streamlit.io)
+- **Plotly Python** - [plotly.com/python](https://plotly.com/python/)
 
 ---
 
-## 👥 Autoras
+## Contato
 
 **Ingrid Mônica da Silva Bezerra**  
-**Karla Cristina de Sousa Araújo**
+GitHub: [@ingridmonica](https://github.com/ingridmonica)
 
+**Karla Cristina de Sousa Araújo**  
+GitHub: [@karlaaraujo](https://github.com/karlaaraujo)
+
+**Instituição:**  
 IFAL - Instituto Federal de Alagoas  
-Curso: Sistemas de Informação
-Disciplina: Sistemas de Informações Gerenciais  - SIGE
-Professora: Wladia Bessa  
-Período: 2025.1
+[www2.ifal.edu.br](https://www2.ifal.edu.br/)
 
 ---
 
-## 📄 Licença
+## 🌟 Mostre seu apoio
 
-Este projeto foi desenvolvido para fins acadêmicos como requisito da disciplina de Sistemas de Informações Gerenciais do IFAL.
-
----
-
-## 🆘 Suporte
-
-Para dúvidas ou problemas:
-1. Consulte este README
-2. Verifique a documentação do Streamlit
-3. Entre em contato com as autoras
+Se este projeto foi útil para você, considere dar uma ⭐️!
 
 ---
 
-**Última atualização:** Dezembro 2025
-**Versão:** 1.0
+<div align="center">
+
+**Desenvolvido por Ingrid Mônica e Karla Cristina**
+
+**IFAL - Sistemas de Informações Gerenciais - 2025.1**
+
+[![IFAL](https://img.shields.io/badge/IFAL-Instituto%20Federal%20de%20Alagoas-green)](https://www2.ifal.edu.br/)
+
+</div>
