@@ -1,13 +1,13 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import streamlit as st
-from datetime import datetime, timedelta
-import io
+from datetime import datetime
+from io import StringIO
 import warnings
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
 st.set_page_config(
     page_title="SIG E-commerce - Dashboard Gerencial",
@@ -18,1049 +18,574 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Header com gradiente azul empresarial */
-    .main-header {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        color: white;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    /* Cards de métricas com bordas coloridas */
-    .metric-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-left: 4px solid;
-        transition: transform 0.2s;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    
-    /* Insights coloridos conforme protótipo */
-    .insight-success {
-        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-        padding: 1.2rem;
-        border-radius: 10px;
-        border-left: 5px solid #28a745;
-        margin: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
-    
-    .insight-warning {
-        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-        padding: 1.2rem;
-        border-radius: 10px;
-        border-left: 5px solid #ffc107;
-        margin: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
-    
-    .insight-info {
-        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-        padding: 1.2rem;
-        border-radius: 10px;
-        border-left: 5px solid #17a2b8;
-        margin: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
-    
-    .insight-danger {
-        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-        padding: 1.2rem;
-        border-radius: 10px;
-        border-left: 5px solid #dc3545;
-        margin: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
-    
-    /* Área de upload */
-    .upload-box {
-        border: 2px dashed #1e3c72;
-        border-radius: 10px;
-        padding: 2rem;
-        text-align: center;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        margin: 1rem 0;
-    }
-    
-    /* Status badges */
-    .status-ok {
-        background: #28a745;
-        color: white;
-        padding: 0.3rem 0.6rem;
-        border-radius: 5px;
-        font-size: 0.85rem;
-        font-weight: bold;
-    }
-    
-    .status-error {
-        background: #dc3545;
-        color: white;
-        padding: 0.3rem 0.6rem;
-        border-radius: 5px;
-        font-size: 0.85rem;
-        font-weight: bold;
-    }
-    
-    /* Títulos de seção */
-    .section-title {
-        color: #1e3c72;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 1.5rem 0 1rem 0;
-        border-bottom: 3px solid #1e3c72;
-        padding-bottom: 0.5rem;
-    }
-    
-    /* Card de histórico */
-    .history-card {
-        background: white;
-        padding: 0.8rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-        border-left: 3px solid #17a2b8;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+:root{
+  --accent:#1e3c72;
+  --accent-2:#2a5298;
+  --muted:#6b7280;
+  --card-bg: rgba(255,255,255,0.85);
+  --card-border: rgba(0,0,0,0.06);
+}
+
+/* Theme-aware text color */
+:root { --text-color: #0b2545; }
+[data-theme="dark"] { --text-color: #e6eef9; --card-bg: rgba(8,14,30,0.45); --card-border: rgba(255,255,255,0.06); }
+
+.block-container {
+  padding-top: 1.2rem;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+  max-width: 1500px;
+}
+
+/* Top header */
+.topbar {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(20,30,60,0.08);
+}
+
+/* KPI Card */
+.kpi-card {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 6px 18px rgba(11,37,69,0.03);
+  min-height: 100px;
+}
+.kpi-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 6px;
+}
+.kpi-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+/* Insight styles */
+.insight {
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: #0b2a3a;
+  box-shadow: 0 4px 12px rgba(11,37,69,0.03);
+}
+.insight-success { background: linear-gradient(90deg,#e9f7ee,#dff2e6); border-left: 6px solid #28a745; }
+.insight-warning { background: linear-gradient(90deg,#fff8e6,#fff2d9); border-left: 6px solid #ffc107; }
+.insight-info { background: linear-gradient(90deg,#e9f6fb,#dff0f6); border-left: 6px solid #17a2b8; }
+.insight-danger { background: linear-gradient(90deg,#fff0f0,#ffe6e8); border-left: 6px solid #dc3545; }
+
+.section-title { color: var(--accent); font-weight:800; margin-bottom:8px; }
+.small-muted { color: var(--muted); font-size:13px; }
+
 </style>
 """, unsafe_allow_html=True)
 
-class EcommerceSIG:
+def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Sistema de Informações Gerenciais para E-commerce
-    Versão completa com funcionalidades empresariais
+    Remove BOM, espaços e padroniza nomes para minúsculo.
+    Ex.: "﻿order_id" -> "order_id"
     """
-    
-    def __init__(self):
-        self.data = None
-        self.company_name = "Empresa"
-        self.data_period = ""
-        self.upload_history = []
-        
-    def validate_csv_format(self, df):
-        """Valida se o CSV está no formato esperado"""
-        required_columns = [
-            'order_id', 'customer_id', 'order_date', 'product_category', 
-            'product_price', 'quantity', 'total_value', 'customer_state', 
-            'customer_city', 'payment_method'
-        ]
-        
-        missing_columns = [col for col in required_columns if col not in df.columns]
-        
-        if missing_columns:
-            return False, f"❌ Colunas obrigatórias ausentes: {', '.join(missing_columns)}"
-        
-        return True, "✅ Formato válido"
-    
-    def load_data(self, uploaded_file, company_name="Empresa"):
-        """Carrega dados do arquivo CSV com suporte a múltiplos encodings"""
-        try:
-            encodings = ['utf-8', 'latin1', 'iso-8859-1', 'cp1252']
-            separators = [',', ';', '\t']
-            
-            df = None
-            for encoding in encodings:
-                for sep in separators:
-                    try:
-                        uploaded_file.seek(0)
-                        df = pd.read_csv(uploaded_file, encoding=encoding, sep=sep)
-                        if len(df.columns) >= 10:  # Verificar se tem colunas suficientes
-                            break
-                    except:
-                        continue
-                if df is not None and len(df.columns) >= 10:
-                    break
-            
-            if df is None:
-                return False, "❌ Não foi possível ler o arquivo. Verifique o formato."
-            
-            self.data = df
-            self.company_name = company_name
-            
-            # Validar formato
-            is_valid, message = self.validate_csv_format(self.data)
-            if not is_valid:
-                return False, message
-            
-            # Processar dados
-            self.data['order_date'] = pd.to_datetime(self.data['order_date'], errors='coerce')
-            
-            # Remover datas inválidas
-            invalid_count = self.data['order_date'].isna().sum()
-            if invalid_count > 0:
-                self.data = self.data.dropna(subset=['order_date'])
-                st.warning(f"⚠️ {invalid_count} registros com datas inválidas foram removidos")
-            
-            # Criar colunas temporais
-            self.data['year'] = self.data['order_date'].dt.year
-            self.data['month'] = self.data['order_date'].dt.month
-            self.data['month_name'] = self.data['order_date'].dt.strftime('%B')
-            self.data['year_month'] = self.data['order_date'].dt.to_period('M').astype(str)
-            self.data['weekday'] = self.data['order_date'].dt.day_name()
-            self.data['day'] = self.data['order_date'].dt.day
-            self.data['quarter'] = self.data['order_date'].dt.quarter
-            
-            # Definir período dos dados
-            min_date = self.data['order_date'].min()
-            max_date = self.data['order_date'].max()
-            self.data_period = f"{min_date.strftime('%d/%m/%Y')} a {max_date.strftime('%d/%m/%Y')}"
-            
-            # Adicionar ao histórico
-            self.upload_history.append({
-                'timestamp': datetime.now(),
-                'company': company_name,
-                'records': len(self.data),
-                'period': self.data_period,
-                'status': 'OK'
-            })
-            
-            return True, f"✅ {len(self.data):,} registros carregados com sucesso!"
-            
-        except Exception as e:
-            self.upload_history.append({
-                'timestamp': datetime.now(),
-                'company': company_name,
-                'records': 0,
-                'period': '-',
-                'status': 'ERRO'
-            })
-            return False, f"❌ Erro ao processar arquivo: {str(e)}"
-    
-    def calculate_kpis(self, start_date=None, end_date=None, selected_states=None):
-        """Calcula KPIs principais com filtros opcionais"""
-        df = self.data.copy()
-        
-        if start_date and end_date:
-            df = df[(df['order_date'] >= pd.to_datetime(start_date)) & 
-                    (df['order_date'] <= pd.to_datetime(end_date))]
-        
-        if selected_states and len(selected_states) > 0:
-            df = df[df['customer_state'].isin(selected_states)]
-        
-        # KPIs 
-        total_orders = df['order_id'].nunique()
-        total_revenue = df['total_value'].sum()
-        total_customers = df['customer_id'].nunique()
-        total_items = df['quantity'].sum()
-        avg_ticket = df.groupby('order_id')['total_value'].sum().mean() if total_orders > 0 else 0
-        
-        # Taxa de recorrência
-        customer_orders = df.groupby('customer_id')['order_id'].nunique()
-        recurring_customers = (customer_orders > 1).sum()
-        recurrence_rate = (recurring_customers / total_customers * 100) if total_customers > 0 else 0
-        
-        # Crescimento mensal
-        monthly_data = df.groupby('year_month').agg({
-            'order_id': 'nunique',
-            'total_value': 'sum',
-            'customer_id': 'nunique',
-            'quantity': 'sum'
-        }).reset_index()
-        monthly_data.columns = ['period', 'orders', 'revenue', 'customers', 'items']
-        monthly_data = monthly_data.sort_values('period')
-        monthly_data['avg_ticket'] = monthly_data['revenue'] / monthly_data['orders']
-        
-        # Calcular crescimento percentual
-        if len(monthly_data) >= 2:
-            monthly_data['revenue_growth'] = monthly_data['revenue'].pct_change() * 100
-            monthly_data['orders_growth'] = monthly_data['orders'].pct_change() * 100
-        
-        return {
-            'total_orders': total_orders,
-            'total_revenue': total_revenue,
-            'total_customers': total_customers,
-            'total_items': total_items,
-            'avg_ticket': avg_ticket,
-            'recurring_customers': recurring_customers,
-            'recurrence_rate': recurrence_rate,
-            'monthly_data': monthly_data,
-            'filtered_data': df
-        }
-    
-    def get_top_products(self, df, limit=10):
-        """Analisa top produtos/categorias"""
-        product_analysis = df.groupby('product_category').agg({
-            'quantity': 'sum',
-            'total_value': 'sum',
-            'order_id': 'nunique'
-        }).reset_index()
-        product_analysis.columns = ['category', 'quantity', 'revenue', 'orders']
-        product_analysis['avg_price'] = product_analysis['revenue'] / product_analysis['quantity']
-        product_analysis['revenue_share'] = (product_analysis['revenue'] / product_analysis['revenue'].sum()) * 100
-        
-        return product_analysis.sort_values('revenue', ascending=False).head(limit)
-    
-    def get_geographic_analysis(self, df):
-        """Análise geográfica das vendas"""
-        state_analysis = df.groupby('customer_state').agg({
-            'order_id': 'nunique',
-            'total_value': 'sum',
-            'customer_id': 'nunique'
-        }).reset_index()
-        state_analysis.columns = ['state', 'orders', 'revenue', 'customers']
-        state_analysis['revenue_share'] = (state_analysis['revenue'] / state_analysis['revenue'].sum()) * 100
-        state_analysis = state_analysis.sort_values('revenue', ascending=False)
-        
-        city_analysis = df.groupby(['customer_state', 'customer_city']).agg({
-            'order_id': 'nunique',
-            'total_value': 'sum'
-        }).reset_index()
-        city_analysis.columns = ['state', 'city', 'orders', 'revenue']
-        city_analysis = city_analysis.sort_values('revenue', ascending=False).head(20)
-        
-        return state_analysis, city_analysis
-    
-    def get_payment_analysis(self, df):
-        """Análise de métodos de pagamento"""
-        payment_analysis = df.groupby('payment_method').agg({
-            'order_id': 'nunique',
-            'total_value': 'sum'
-        }).reset_index()
-        payment_analysis.columns = ['method', 'orders', 'revenue']
-        payment_analysis['percentage'] = (payment_analysis['orders'] / payment_analysis['orders'].sum()) * 100
-        
-        return payment_analysis.sort_values('orders', ascending=False)
-    
-    def generate_insights(self, kpis, top_products, geo_data, payment_data):
-        """Gera insights automáticos baseados nos dados (conforme protótipo)"""
-        insights = []
-        
-        monthly = kpis['monthly_data']
-        if len(monthly) >= 2:
-            last_revenue = monthly.iloc[-1]['revenue']
-            prev_revenue = monthly.iloc[-2]['revenue']
-            growth = ((last_revenue - prev_revenue) / prev_revenue) * 100
-            
-            if growth > 5:
-                insights.append({
-                    'type': 'success',
-                    'icon': '📈',
-                    'title': 'Crescimento Positivo',
-                    'text': f'Crescimento de {growth:.1f}% na receita do último mês analisado. Tendência positiva identificada. Manter estratégias atuais de marketing e vendas.',
-                    'value': f'{growth:.1f}%'
-                })
-            elif growth < -5:
-                insights.append({
-                    'type': 'danger',
-                    'icon': '🚨',
-                    'title': 'Queda nas Vendas',
-                    'text': f'Queda de {abs(growth):.1f}% na receita do último mês. Revisar estratégias comerciais urgentemente.',
-                    'value': f'{growth:.1f}%'
-                })
-        
-        state_data, _ = geo_data
-        if len(state_data) > 0:
-            top_state = state_data.iloc[0]
-            concentration = top_state['revenue_share']
-            
-            if concentration > 35:
-                insights.append({
-                    'type': 'warning',
-                    'icon': '📍',
-                    'title': 'Concentração Geográfica',
-                    'text': f'{top_state["state"]} representa {concentration:.1f}% da receita total. Alta concentração em uma única região indica oportunidade de expansão para outros mercados.',
-                    'value': f'{concentration:.1f}%'
-                })
-        
-        if len(top_products) > 0:
-            top_category = top_products.iloc[0]
-            category_share = top_category['revenue_share']
-            
-            insights.append({
-                'type': 'info',
-                'icon': '🏆',
-                'title': 'Categoria Líder',
-                'text': f'"{top_category["category"]}" lidera com {category_share:.1f}% da receita total analisada. Categoria apresenta melhor desempenho e maior ticket médio. Considere expandir portfólio.',
-                'value': f'{category_share:.1f}%'
-            })
-        
-        avg_ticket = kpis['avg_ticket']
-        if avg_ticket < 200:
-            insights.append({
-                'type': 'danger',
-                'icon': '💰',
-                'title': 'Oportunidade de Ticket Médio',
-                'text': f'Ticket médio atual: R$ {avg_ticket:.2f}. Valor está abaixo da média do setor (R$ 200). Considere estratégias de upselling e cross-selling para aumentar.',
-                'value': f'R$ {avg_ticket:.2f}'
-            })
-        
-        return insights
+    df = df.copy()
+    df.columns = (
+        df.columns
+        .astype(str)
+        .str.replace("\ufeff", "", regex=False)
+        .str.strip()
+        .str.lower()
+    )
+    return df
 
-def create_sample_data():
-    """Cria dados de exemplo realistas"""
+
+def _normalize_number_str(s):
+    """
+    Normaliza strings numéricas no formato BR/EN para float.
+    Exemplos:
+     - "1.234,56" -> 1234.56
+     - "1234,56"  -> 1234.56
+     - "1234.56"  -> 1234.56
+    """
+    if pd.isna(s):
+        return np.nan
+    s = str(s).strip()
+    if s == "":
+        return np.nan
+    if '.' in s and ',' in s:
+        s = s.replace('.', '').replace(',', '.')
+    elif ',' in s and '.' not in s:
+        s = s.replace(',', '.')
+    try:
+        return float(s)
+    except:
+        return np.nan
+
+
+def carregar_csv_robusto(uploaded_file):
+    """
+    Lê CSV tentando encodings e separadores comuns.
+    Retorna DataFrame com colunas normalizadas.
+    """
+    try:
+        df = pd.read_csv(uploaded_file, sep=None, engine="python")
+    except Exception:
+        uploaded_file.seek(0)
+        df = None
+        for enc in ['utf-8-sig', 'utf-8', 'latin1', 'iso-8859-1', 'cp1252']:
+            for sep in [',', ';', '\t']:
+                try:
+                    uploaded_file.seek(0)
+                    df = pd.read_csv(uploaded_file, encoding=enc, sep=sep)
+                    break
+                except Exception:
+                    continue
+            if df is not None:
+                break
+        if df is None:
+            uploaded_file.seek(0)
+            content = uploaded_file.read()
+            if isinstance(content, bytes):
+                try:
+                    content = content.decode('utf-8')
+                except:
+                    content = content.decode('latin1', errors='ignore')
+            df = pd.read_csv(StringIO(content), sep=None, engine="python")
+
+    df = _normalize_columns(df)
+
+    if 'total_value' in df.columns:
+        df['total_value'] = df['total_value'].apply(_normalize_number_str)
+    if 'product_price' in df.columns:
+        df['product_price'] = df['product_price'].apply(_normalize_number_str)
+    if 'quantity' in df.columns:
+        try:
+            df['quantity'] = pd.to_numeric(df['quantity'], errors='coerce').fillna(0).astype(int)
+        except Exception:
+            df['quantity'] = df['quantity'].apply(lambda x: int(float(_normalize_number_str(x))) if not pd.isna(x) else 0)
+
+    if 'order_date' in df.columns:
+        df['order_date'] = pd.to_datetime(df['order_date'], errors='coerce')
+
+    return df
+
+
+def create_sample_data(n_records=1000):
     np.random.seed(42)
-    
-    categories = [
-        'Eletrônicos', 'Moda e Vestuário', 'Casa e Decoração', 
-        'Livros e Papelaria', 'Esportes e Fitness', 'Beleza e Cuidados',
-        'Alimentos e Bebidas', 'Brinquedos e Games'
-    ]
-    
-    states = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'GO', 'PE', 'CE', 'DF', 'ES']
-    
+    categories = ['Eletrônicos', 'Moda', 'Casa e Decoração', 'Livros', 'Esportes', 'Beleza']
+    states = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'PE']
     cities_by_state = {
         'SP': ['São Paulo', 'Campinas', 'Santos', 'Ribeirão Preto'],
-        'RJ': ['Rio de Janeiro', 'Niterói', 'Petrópolis'],
-        'MG': ['Belo Horizonte', 'Uberlândia', 'Juiz de Fora'],
+        'RJ': ['Rio de Janeiro', 'Niterói'],
+        'MG': ['Belo Horizonte', 'Uberlândia'],
         'RS': ['Porto Alegre', 'Caxias do Sul'],
         'PR': ['Curitiba', 'Londrina'],
         'SC': ['Florianópolis', 'Joinville'],
         'BA': ['Salvador', 'Feira de Santana'],
-        'GO': ['Goiânia'],
-        'PE': ['Recife'],
-        'CE': ['Fortaleza'],
-        'DF': ['Brasília'],
-        'ES': ['Vitória']
+        'PE': ['Recife', 'Olinda'],
     }
-    
-    payment_methods = ['Cartão de Crédito', 'Cartão de Débito', 'PIX', 'Boleto']
-    
-    n_records = 5000
-    
-    # Probabilidades que somam exatamente 1
-    state_probs = np.array([0.22, 0.12, 0.10, 0.07, 0.07, 0.06, 0.08, 0.05, 0.06, 0.05, 0.06, 0.06])
-    state_probs /= state_probs.sum()  
+    payment_methods = ['Cartão de Crédito', 'PIX', 'Boleto', 'Cartão de Débito']
 
-    # Gera datas com sazonalidade
-    dates = []
-    for _ in range(n_records):
-        year = np.random.choice([2023, 2024], p=[0.4, 0.6])
-        month = np.random.choice(
-            range(1, 13),
-            p=[0.06, 0.05, 0.07, 0.08, 0.09, 0.10, 0.08, 0.09, 0.08, 0.09, 0.11, 0.10]
-        )
-        day = np.random.randint(1, 29)
-        dates.append(f'{year}-{month:02d}-{day:02d}')
-    
-    data = {
-        'order_id': [f'ORD_{i:06d}' for i in range(1, n_records + 1)],
-        'customer_id': [f'CUST_{np.random.randint(1, 2000):06d}' for _ in range(n_records)],
-        'order_date': dates,
-        'product_category': np.random.choice(
-            categories, n_records,
-            p=[0.25, 0.18, 0.12, 0.08, 0.10, 0.09, 0.08, 0.10]
-        ),
-    }
-    
-    df = pd.DataFrame(data)
-    
-    prices = []
-    for cat in df['product_category']:
+    state_probs = np.array([0.35, 0.20, 0.12, 0.08, 0.06, 0.05, 0.08, 0.06])
+    state_probs = state_probs / state_probs.sum()
+
+    dates = pd.date_range(start='2024-01-01', end='2024-10-31').to_pydatetime().tolist()
+    rows = []
+    for i in range(n_records):
+        state = np.random.choice(states, p=state_probs)
+        city = np.random.choice(cities_by_state[state])
+        cat = np.random.choice(categories)
         if cat == 'Eletrônicos':
-            prices.append(round(np.random.uniform(200, 3000), 2))
-        elif cat == 'Moda e Vestuário':
-            prices.append(round(np.random.uniform(40, 400), 2))
+            price = round(np.random.uniform(200, 3500), 2)
+        elif cat == 'Moda':
+            price = round(np.random.uniform(30, 700), 2)
         elif cat == 'Casa e Decoração':
-            prices.append(round(np.random.uniform(50, 800), 2))
-        elif cat == 'Livros e Papelaria':
-            prices.append(round(np.random.uniform(15, 150), 2))
-        elif cat == 'Esportes e Fitness':
-            prices.append(round(np.random.uniform(30, 500), 2))
-        elif cat == 'Beleza e Cuidados':
-            prices.append(round(np.random.uniform(25, 300), 2))
-        elif cat == 'Alimentos e Bebidas':
-            prices.append(round(np.random.uniform(20, 200), 2))
+            price = round(np.random.uniform(60, 1500), 2)
+        elif cat == 'Livros':
+            price = round(np.random.uniform(15, 120), 2)
+        elif cat == 'Esportes':
+            price = round(np.random.uniform(40, 900), 2)
         else:
-            prices.append(round(np.random.uniform(30, 400), 2))
-    
-    df['product_price'] = prices
-    
-    df['quantity'] = np.random.randint(1, 6, n_records)
-    
-    df['total_value'] = df['product_price'] * df['quantity']
-    
-    # Estado com distribuição ajustada
-    df['customer_state'] = np.random.choice(states, n_records, p=state_probs)
-    
-    # Cidades coerentes com o estado
-    df['customer_city'] = df['customer_state'].apply(lambda s: np.random.choice(cities_by_state[s]))
-    
-    # Pagamento
-    df['payment_method'] = np.random.choice(payment_methods, n_records, p=[0.45, 0.15, 0.30, 0.10])
-    
+            price = round(np.random.uniform(20, 400), 2)
+
+        qty = int(np.random.randint(1, 5))
+        total = round(price * qty, 2)
+        datec = pd.Timestamp(np.random.choice(dates)).strftime('%Y-%m-%d')
+
+        rows.append({
+            'order_id': f'ORD_{i+1:06d}',
+            'customer_id': f'CUST_{np.random.randint(1,2000):06d}',
+            'order_date': datec,
+            'product_category': cat,
+            'product_price': price,
+            'quantity': qty,
+            'total_value': total,
+            'customer_state': state,
+            'customer_city': city,
+            'payment_method': np.random.choice(payment_methods, p=[0.45,0.3,0.15,0.10])
+        })
+
+    df = pd.DataFrame(rows)
+    df = _normalize_columns(df)
+    df['total_value'] = df['total_value'].astype(float)
+    df['product_price'] = df['product_price'].astype(float)
+    df['quantity'] = df['quantity'].astype(int)
+    df['order_date'] = pd.to_datetime(df['order_date'])
     return df
 
 
+def calcular_kpis(df: pd.DataFrame):
+    """
+    Calcula KPIs principais a partir do dataframe filtrado.
+    Retorna dicionário com resultados e série mensal (period).
+    """
+    df = df.copy()
+    if 'total_value' not in df.columns:
+        df['total_value'] = 0.0
+    if 'order_id' not in df.columns:
+        df['order_id'] = range(1, len(df) + 1)
+
+    total_orders = df['order_id'].nunique()
+    total_revenue = df['total_value'].fillna(0).sum()
+    total_customers = df['customer_id'].nunique() if 'customer_id' in df.columns else 0
+    total_items = df['quantity'].sum() if 'quantity' in df.columns else 0
+    avg_ticket = df.groupby('order_id')['total_value'].sum().mean() if total_orders > 0 else 0.0
+
+    if 'order_date' in df.columns:
+        df['period'] = pd.to_datetime(df['order_date']).dt.to_period('M').astype(str)
+        monthly = df.groupby('period').agg(
+            orders=('order_id', 'nunique'),
+            revenue=('total_value', 'sum'),
+            customers=('customer_id', 'nunique'),
+            items=('quantity', 'sum')
+        ).reset_index().sort_values('period')
+        if len(monthly) >= 2:
+            monthly['revenue_growth'] = monthly['revenue'].pct_change() * 100
+            monthly['orders_growth'] = monthly['orders'].pct_change() * 100
+        else:
+            monthly['revenue_growth'] = 0
+            monthly['orders_growth'] = 0
+    else:
+        monthly = pd.DataFrame(columns=['period','orders','revenue','customers','items'])
+
+    return {
+        'total_orders': total_orders,
+        'total_revenue': total_revenue,
+        'total_customers': total_customers,
+        'total_items': total_items,
+        'avg_ticket': avg_ticket,
+        'monthly': monthly,
+        'df': df
+    }
+
+
+def generate_insights(kpis: dict, df: pd.DataFrame):
+    """
+    Gera lista de insights (tipo, título, texto) com regras simples.
+    """
+    insights = []
+    monthly = kpis.get('monthly', pd.DataFrame())
+    if len(monthly) >= 2:
+        last = monthly.iloc[-1]['revenue']
+        prev = monthly.iloc[-2]['revenue']
+        if prev != 0:
+            growth = (last - prev) / prev * 100
+            if growth > 5:
+                insights.append({'type':'success','title':'Crescimento','text':f'Crescimento de {growth:.1f}% na receita mês-a-mês.'})
+            elif growth < -5:
+                insights.append({'type':'danger','title':'Queda','text':f'Queda de {abs(growth):.1f}% na receita mês-a-mês.'})
+
+    if 'customer_state' in df.columns and 'total_value' in df.columns:
+        state_rev = df.groupby('customer_state')['total_value'].sum().sort_values(ascending=False)
+        if len(state_rev) > 0:
+            top_state = state_rev.index[0]
+            share = (state_rev.iloc[0] / state_rev.sum()) * 100 if state_rev.sum() > 0 else 0
+            if share > 35:
+                insights.append({'type':'warning','title':'Concentração','text':f'{top_state} representa {share:.1f}% da receita. Alta dependência geográfica.'})
+
+    if 'product_category' in df.columns:
+        cat_rev = df.groupby('product_category')['total_value'].sum().sort_values(ascending=False)
+        if len(cat_rev) > 0:
+            top_cat = cat_rev.index[0]
+            share = (cat_rev.iloc[0] / cat_rev.sum()) * 100 if cat_rev.sum() > 0 else 0
+            insights.append({'type':'info','title':'Categoria Líder','text':f'"{top_cat}" gera {share:.1f}% da receita.'})
+
+    if kpis.get('avg_ticket', 0) < 200:
+        insights.append({'type':'danger','title':'Ticket Médio Baixo','text':f'Ticket médio R$ {kpis.get("avg_ticket",0):.2f}. Considere upsell.'})
+
+    return insights
+
 def main():
-    """Interface principal do SIG"""
-    
     st.markdown("""
-    <div class="main-header">
-        <h1 style='margin:0; font-size: 2rem;'>📊 Sistema de Informações Gerenciais para E-commerce</h1>
-        <p style='margin: 0.5rem 0 0 0; font-size: 1rem; opacity: 0.95;'>Dashboard Gerencial Empresarial</p>
-        <p style='margin: 0.5rem 0 0 0; font-size: 0.9rem; opacity: 0.85;'>
-            Desenvolvido por: <strong>Ingrid Mônica da Silva Bezerra</strong> e <strong>Karla Cristina de Sousa Araújo</strong><br>
-            IFAL - Instituto Federal de Alagoas | Disciplina: Sistemas de Informações Gerenciais | Prof.ª Wladia Bessa | 2025.1
-        </p>
+    <div class="topbar">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 style='margin:0; color: white;'>
+            📊 Sistema de Informações Gerenciais para E-commerce
+          </h2>
+          <div style="font-size:13px; opacity:0.95; color: rgba(255,255,255,0.92);">Dashboard Gerencial - SIG</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:13px; color:rgba(255,255,255,0.9);">IFAL • 2025</div>
+        </div>
+      </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Inicializar sistema
-    if 'sig_system' not in st.session_state:
-        st.session_state.sig_system = EcommerceSIG()
-        st.session_state.data_loaded = False
-    
-    sig = st.session_state.sig_system
-    
-    # Sidebar
-    with st.sidebar:
-        st.markdown("### ⚙️ Configurações do Sistema")
-        
-        st.markdown("---")
-        st.markdown("#### 📁 Upload de Dados")
-        
-        # Botão dados de exemplo
-        if st.button("🧪 Usar Dados de Exemplo", type="primary", use_container_width=True):
-            sample_data = create_sample_data()
-            buffer = io.StringIO()
-            sample_data.to_csv(buffer, index=False, sep=',')
-            buffer.seek(0)
-            
-            success, message = sig.load_data(buffer, "Empresa Demonstração")
-            if success:
-                st.session_state.data_loaded = True
-                st.success(message)
-                st.rerun()
-        
-        st.markdown("---")
-        
-        # Upload de arquivo
-        company_name = st.text_input("Nome da Empresa:", value="Minha Empresa")
-        uploaded_file = st.file_uploader(
-            "Selecione o arquivo CSV:",
-            type=['csv'],
-            help="Formato: CSV com vírgula ou ponto-e-vírgula"
-        )
-        
+
+    st.sidebar.header("⚙️ Configurações")
+    st.sidebar.subheader("Fonte de Dados")
+    data_option = st.sidebar.radio("Selecionar dataset", ["Usar dados de exemplo", "Upload de arquivo CSV"])
+
+    company_name = "Empresa de Exemplo"
+    if data_option == "Upload de arquivo CSV":
+        st.sidebar.subheader("Informações da Empresa")
+        company_name = st.sidebar.text_input("Nome da empresa", value="Empresa de Exemplo")
+
+    df = None
+    if data_option == "Usar dados de exemplo":
+        if st.sidebar.button("Carregar dados de exemplo"):
+            df = create_sample_data(1000)
+            st.session_state['df'] = df
+            st.session_state['company'] = company_name
+            st.success("Dados de exemplo carregados.")
+            st.rerun()
+        else:
+            if 'df' in st.session_state:
+                df = st.session_state['df']
+                company_name = st.session_state.get('company', company_name)
+    else:
+        uploaded_file = st.sidebar.file_uploader("Selecione o arquivo CSV", type=['csv'])
         if uploaded_file is not None:
-            success, message = sig.load_data(uploaded_file, company_name)
-            if success:
-                st.session_state.data_loaded = True
-                st.success(message)
-                st.rerun()
-            else:
-                st.error(message)
-        
-        # Formato esperado
-        with st.expander("📋 Formato CSV Esperado"):
-            st.markdown("""
-            **Colunas obrigatórias:**
-            - `order_id`, `customer_id`
-            - `order_date` (YYYY-MM-DD)
-            - `product_category`
-            - `product_price`, `quantity`
-            - `total_value`
-            - `customer_state`, `customer_city`
-            - `payment_method`
-            
-            **Separador:** , ou ;  
-            **Encoding:** UTF-8, Latin1 ou ISO-8859-1
-            """)
-        
-        # Histórico de uploads
-        if len(sig.upload_history) > 0:
-            st.markdown("---")
-            st.markdown("#### 📜 Histórico de Uploads")
-            for upload in reversed(sig.upload_history[-3:]):
-                status_class = "status-ok" if upload['status'] == 'OK' else "status-error"
-                st.markdown(f"""
-                <div class="history-card">
-                    <span class="{status_class}">{upload['status']}</span><br>
-                    <small>
-                        <strong>{upload['company']}</strong><br>
-                        {upload['timestamp'].strftime('%d/%m/%Y %H:%M')}<br>
-                        {upload['records']:,} registros
-                    </small>
-                </div>
-                """, unsafe_allow_html=True)
-    
-    # Verificar se dados foram carregados
-    if not st.session_state.data_loaded:
-        col1, col2 = st.columns([2, 1])
-        
-        with col1:
-            st.info("👈 **Faça o upload dos dados CSV ou use os dados de exemplo para começar**")
-            
-            st.markdown("### 🎯 Funcionalidades do Sistema")
-            
-            col_a, col_b, col_c = st.columns(3)
-            
-            with col_a:
-                st.markdown("""
-                **📊 Análises Completas**
-                - KPIs em tempo real
-                - Evolução temporal
-                - Análise geográfica
-                - Performance de produtos
-                """)
-            
-            with col_b:
-                st.markdown("""
-                **💡 Insights Automáticos**
-                - Crescimento/queda
-                - Oportunidades
-                - Alertas estratégicos
-                - Recomendações
-                """)
-            
-            with col_c:
-                st.markdown("""
-                **🔍 Recursos**
-                - Filtros avançados
-                - Gráficos interativos
-                - Exportação de dados
-                - Multi-empresa
-                """)
-        
-        with col2:
-            st.markdown("### 📋 Exemplo CSV")
-            example_df = pd.DataFrame({
-                'order_id': ['ORD_001', 'ORD_002'],
-                'customer_id': ['C001', 'C002'],
-                'order_date': ['2024-01-15', '2024-01-16'],
-                'product_category': ['Eletrônicos', 'Moda'],
-                'product_price': [299.90, 89.50],
-                'quantity': [1, 2],
-                'total_value': [299.90, 179.00],
-                'customer_state': ['SP', 'RJ'],
-                'customer_city': ['São Paulo', 'Rio de Janeiro'],
-                'payment_method': ['Cartão Crédito', 'PIX']
-            })
-            st.dataframe(example_df, use_container_width=True, hide_index=True)
-        
+            try:
+                df = carregar_csv_robusto(uploaded_file)
+                df = _normalize_columns(df)
+                st.session_state['df'] = df
+                st.session_state['company'] = company_name
+                st.success("Arquivo carregado e processado.")
+            except Exception as e:
+                st.error(f"Erro ao ler arquivo: {e}")
+                st.stop()
+        else:
+            if 'df' in st.session_state:
+                df = st.session_state['df']
+                company_name = st.session_state.get('company', company_name)
+
+    if df is None:
+        st.info("Use a barra lateral para carregar um arquivo CSV ou carregar dados de exemplo.")
         return
-    
-    # Dashboard principal
+
+    df = _normalize_columns(df)
+    if 'order_date' in df.columns:
+        df['order_date'] = pd.to_datetime(df['order_date'], errors='coerce')
+    else:
+        st.error("Coluna obrigatória 'order_date' não encontrada no dataset.")
+        st.stop()
+
+    df = df[~df['order_date'].isna()].copy()
+    if 'total_value' in df.columns:
+        df['total_value'] = df['total_value'].apply(lambda x: _normalize_number_str(x) if not pd.api.types.is_numeric_dtype(type(x)) else x)
+        df['total_value'] = pd.to_numeric(df['total_value'], errors='coerce').fillna(0.0)
+    else:
+        df['total_value'] = 0.0
+
+    if 'product_price' in df.columns:
+        df['product_price'] = df['product_price'].apply(lambda x: _normalize_number_str(x) if not pd.api.types.is_numeric_dtype(type(x)) else x)
+        df['product_price'] = pd.to_numeric(df['product_price'], errors='coerce').fillna(0.0)
+
+    if 'quantity' in df.columns:
+        df['quantity'] = pd.to_numeric(df['quantity'], errors='coerce').fillna(0).astype(int)
+    else:
+        df['quantity'] = 0
+
     st.markdown(f"""
-    <div style='background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                padding: 1rem; border-radius: 10px; margin-bottom: 1rem;'>
-        <h2 style='margin: 0; color: #1e3c72;'>📈 Dashboard Gerencial - {sig.company_name}</h2>
-        <p style='margin: 0.3rem 0 0 0; color: #666;'>
-            📅 Período: {sig.data_period} | 📊 Total de registros: {len(sig.data):,}
-        </p>
+    <div style="margin-top:10px; margin-bottom:8px;">
+        <h3 style="margin:0;">📈 Dashboard Gerencial - <span style="color:#1e3c72;">{company_name}</span></h3>
+        <div class="small-muted">Período de dados: {df['order_date'].min().strftime('%d/%m/%Y')} a {df['order_date'].max().strftime('%d/%m/%Y')} | Registros: {len(df):,}</div>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Filtros avançados
+
     with st.expander("🔍 Filtros Avançados", expanded=False):
         col1, col2 = st.columns(2)
-        
         with col1:
-            min_date = sig.data['order_date'].min().date()
-            max_date = sig.data['order_date'].max().date()
-            date_range = st.date_input(
-                "📆 Período de análise:",
-                value=(min_date, max_date),
-                min_value=min_date,
-                max_value=max_date
-            )
-        
+            min_date = df['order_date'].min().date()
+            max_date = df['order_date'].max().date()
+            date_range = st.date_input("Período:", value=(min_date, max_date), min_value=min_date, max_value=max_date)
         with col2:
-            all_states = sorted(sig.data['customer_state'].unique().tolist())
-            selected_states = st.multiselect(
-                "🗺️ Estados:",
-                options=all_states,
-                default=all_states
-            )
-    
-    # Aplicar filtros
-    start_date = date_range[0] if len(date_range) == 2 else None
-    end_date = date_range[1] if len(date_range) == 2 else None
-    
-    # Calcular KPIs
-    with st.spinner('⏳ Processando dados...'):
-        kpis = sig.calculate_kpis(start_date, end_date, selected_states)
-    
-    # KPIs principais (estilo protótipo - 5 cards)
+            states = sorted(df['customer_state'].dropna().unique().tolist()) if 'customer_state' in df.columns else []
+            selected_states = st.multiselect("Estados:", options=states, default=states)
+
+    try:
+        start_date, end_date = date_range
+    except:
+        start_date = date_range
+        end_date = date_range
+
+    df_filtered = df[(df['order_date'] >= pd.to_datetime(start_date)) & (df['order_date'] <= pd.to_datetime(end_date))]
+    if 'customer_state' in df_filtered.columns and selected_states:
+        df_filtered = df_filtered[df_filtered['customer_state'].isin(selected_states)]
+
+    k = calcular_kpis(df_filtered)
+
     st.markdown("### 📊 Indicadores Principais")
     col1, col2, col3, col4, col5 = st.columns(5)
-    
-    with col1:
-        st.metric(
-            "🛒 Total de Pedidos",
-            f"{kpis['total_orders']:,}",
-            help="Número total de pedidos únicos"
-        )
-    
-    with col2:
-        st.metric(
-            "💰 Receita Total",
-            f"R$ {kpis['total_revenue']:,.0f}",
-            help="Receita total gerada"
-        )
-    
-    with col3:
-        st.metric(
-            "👥 Clientes Únicos",
-            f"{kpis['total_customers']:,}",
-            help="Número de clientes únicos"
-        )
-    
-    with col4:
-        st.metric(
-            "📦 Itens Vendidos",
-            f"{kpis['total_items']:,}",
-            help="Total de itens vendidos"
-        )
-    
-    with col5:
-        st.metric(
-            "🎯 Ticket Médio",
-            f"R$ {kpis['avg_ticket']:,.2f}",
-            help="Valor médio por pedido"
-        )
-    
-    st.markdown("---")
-    
-    # Gráficos principais em abas
-    tab1, tab2, tab3, tab4 = st.tabs(["📈 Evolução Temporal", "🏆 Produtos", "🗺️ Geografia", "💳 Pagamentos"])
-    
-    with tab1:
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### 📅 Evolução de Vendas (Mensal)")
-            fig_revenue = px.line(
-                kpis['monthly_data'],
-                x='period',
-                y='revenue',
-                markers=True,
-                labels={'revenue': 'Receita (R$)', 'period': 'Período'}
-            )
-            fig_revenue.update_traces(
-                line_color='#1e3c72',
-                line_width=3,
-                marker=dict(size=8)
-            )
-            fig_revenue.update_layout(
-                xaxis_tickangle=-45,
-                hovermode='x unified',
-                plot_bgcolor='rgba(0,0,0,0)',
-                height=350
-            )
-            st.plotly_chart(fig_revenue, use_container_width=True)
-        
-        with col2:
-            st.markdown("#### 🛒 Evolução de Pedidos")
-            fig_orders = px.bar(
-                kpis['monthly_data'],
-                x='period',
-                y='orders',
-                labels={'orders': 'Número de Pedidos', 'period': 'Período'},
-                color='orders',
-                color_continuous_scale='Blues'
-            )
-            fig_orders.update_layout(
-                xaxis_tickangle=-45,
-                showlegend=False,
-                height=350
-            )
-            st.plotly_chart(fig_orders, use_container_width=True)
-        
-        # Gráfico de duplo eixo
-        st.markdown("#### 📊 Pedidos vs Ticket Médio")
-        fig_dual = make_subplots(specs=[[{"secondary_y": True}]])
-        
-        fig_dual.add_trace(
-            go.Bar(
-                x=kpis['monthly_data']['period'],
-                y=kpis['monthly_data']['orders'],
-                name='Pedidos',
-                marker_color='#1e3c72'
-            ),
-            secondary_y=False
-        )
-        
-        fig_dual.add_trace(
-            go.Scatter(
-                x=kpis['monthly_data']['period'],
-                y=kpis['monthly_data']['avg_ticket'],
-                name='Ticket Médio (R$)',
-                mode='lines+markers',
-                line=dict(color='#28a745', width=3),
-                marker=dict(size=8)
-            ),
-            secondary_y=True
-        )
-        
-        fig_dual.update_xaxes(title_text="Período", tickangle=-45)
-        fig_dual.update_yaxes(title_text="Pedidos", secondary_y=False)
-        fig_dual.update_yaxes(title_text="Ticket Médio (R$)", secondary_y=True)
-        fig_dual.update_layout(hovermode='x unified', height=400)
-        
-        st.plotly_chart(fig_dual, use_container_width=True)
-    
-    with tab2:
-        top_products = sig.get_top_products(kpis['filtered_data'], limit=10)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### 🏆 Top Categorias por Receita")
-            fig_products = px.bar(
-                top_products.head(8),
-                y='category',
-                x='revenue',
-                orientation='h',
-                labels={'revenue': 'Receita (R$)', 'category': 'Categoria'},
-                color='revenue',
-                color_continuous_scale='Viridis',
-                text='revenue'
-            )
-            fig_products.update_traces(
-                texttemplate='R$ %{text:,.0f}',
-                textposition='outside'
-            )
-            fig_products.update_layout(
-                showlegend=False,
-                yaxis={'categoryorder':'total ascending'},
-                height=400
-            )
-            st.plotly_chart(fig_products, use_container_width=True)
-        
-        with col2:
-            st.markdown("#### 📊 Participação por Categoria")
-            fig_pie = px.pie(
-                top_products.head(6),
-                values='revenue',
-                names='category',
-                hole=0.4
-            )
-            fig_pie.update_traces(
-                textposition='inside',
-                textinfo='percent+label',
-                textfont_size=11
-            )
-            fig_pie.update_layout(height=400)
-            st.plotly_chart(fig_pie, use_container_width=True)
-        
-        # Tabela detalhada
-        st.markdown("#### 📋 Análise Detalhada de Categorias")
-        top_display = top_products.copy()
-        top_display['revenue'] = top_display['revenue'].apply(lambda x: f"R$ {x:,.2f}")
-        top_display['avg_price'] = top_display['avg_price'].apply(lambda x: f"R$ {x:,.2f}")
-        top_display['revenue_share'] = top_display['revenue_share'].apply(lambda x: f"{x:.1f}%")
-        top_display.columns = ['Categoria', 'Qtd', 'Receita', 'Pedidos', 'Preço Médio', 'Part. %']
-        st.dataframe(top_display, use_container_width=True, hide_index=True)
-    
-    with tab3:
-        state_data, city_data = sig.get_geographic_analysis(kpis['filtered_data'])
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### Top Estados por Receita")
-            fig_states = px.bar(
-                state_data.head(10),
-                x='state',
-                y='revenue',
-                labels={'revenue': 'Receita (R$)', 'state': 'Estado'},
-                color='revenue',
-                color_continuous_scale='Blues',
-                text='revenue'
-            )
-            fig_states.update_traces(
-                texttemplate='R$ %{text:,.0f}',
-                textposition='outside'
-            )
-            fig_states.update_layout(showlegend=False, height=400)
-            st.plotly_chart(fig_states, use_container_width=True)
-        
-        with col2:
-            st.markdown("#### Top Cidades por Receita")
-            fig_cities = px.bar(
-                city_data.head(10),
-                y='city',
-                x='revenue',
-                orientation='h',
-                labels={'revenue': 'Receita (R$)', 'city': 'Cidade'},
-                color='revenue',
-                color_continuous_scale='Greens'
-            )
-            fig_cities.update_layout(
-                showlegend=False,
-                yaxis={'categoryorder':'total ascending'},
-                height=400
-            )
-            st.plotly_chart(fig_cities, use_container_width=True)
-        
-        # Distribuição percentual
-        st.markdown("#### Distribuição de Receita por Estado (%)")
-        state_top = state_data.head(10)
-        fig_dist = px.bar(
-            state_top,
-            x='state',
-            y='revenue_share',
-            labels={'revenue_share': 'Participação (%)', 'state': 'Estado'},
-            color='revenue_share',
-            color_continuous_scale='RdYlGn',
-            text='revenue_share'
-        )
-        fig_dist.update_traces(
-            texttemplate='%{text:.1f}%',
-            textposition='outside'
-        )
-        fig_dist.update_layout(showlegend=False, height=350)
-        st.plotly_chart(fig_dist, use_container_width=True)
-    
-    with tab4:
-        payment_data = sig.get_payment_analysis(kpis['filtered_data'])
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### 💳 Métodos de Pagamento")
-            fig_payment = px.pie(
-                payment_data,
-                values='orders',
-                names='method',
-                hole=0.5,
-                color_discrete_sequence=px.colors.qualitative.Set3
-            )
-            fig_payment.update_traces(
-                textposition='outside',
-                textinfo='percent+label',
-                pull=[0.1 if i == 0 else 0 for i in range(len(payment_data))]
-            )
-            fig_payment.update_layout(height=400)
-            st.plotly_chart(fig_payment, use_container_width=True)
-        
-        with col2:
-            st.markdown("#### 💰 Receita por Método")
-            fig_pay_rev = px.bar(
-                payment_data,
-                x='method',
-                y='revenue',
-                labels={'revenue': 'Receita (R$)', 'method': 'Método'},
-                color='revenue',
-                color_continuous_scale='Purples',
-                text='revenue'
-            )
-            fig_pay_rev.update_traces(
-                texttemplate='R$ %{text:,.0f}',
-                textposition='outside'
-            )
-            fig_pay_rev.update_layout(
-                xaxis_tickangle=-45,
-                showlegend=False,
-                height=400
-            )
-            st.plotly_chart(fig_pay_rev, use_container_width=True)
-        
-        # Tabela comparativa
-        st.markdown("#### Análise Comparativa de Métodos")
-        payment_display = payment_data.copy()
-        payment_display['avg_ticket'] = payment_display['revenue'] / payment_display['orders']
-        payment_display['revenue'] = payment_display['revenue'].apply(lambda x: f"R$ {x:,.2f}")
-        payment_display['avg_ticket'] = payment_display['avg_ticket'].apply(lambda x: f"R$ {x:,.2f}")
-        payment_display['percentage'] = payment_display['percentage'].apply(lambda x: f"{x:.1f}%")
-        payment_display.columns = ['Método', 'Pedidos', 'Receita', 'Part. %', 'Ticket Médio']
-        st.dataframe(payment_display, use_container_width=True, hide_index=True)
-    
-    # Insights Automáticos
-    st.markdown("---")
-    st.markdown("### 💡 Insights Gerenciais Automáticos")
-    
-    insights = sig.generate_insights(kpis, top_products, (state_data, city_data), payment_data)
-    
-    # Exibir insights em grid 2x2
-    if len(insights) > 0:
-        cols = st.columns(2)
-        for idx, insight in enumerate(insights):
-            with cols[idx % 2]:
-                insight_class = f"insight-{insight['type']}"
-                st.markdown(f"""
-                <div class="{insight_class}">
-                    <h4 style='margin: 0 0 0.5rem 0;'>{insight['icon']} {insight['title']}</h4>
-                    <p style='margin: 0 0 0.5rem 0; font-size: 0.95rem;'>{insight['text']}</p>
-                    {f"<p style='margin: 0; font-weight: bold; color: #1e3c72; font-size: 1.1rem;'>{insight.get('value', '')}</p>" if 'value' in insight else ""}
-                </div>
-                """, unsafe_allow_html=True)
-    else:
-        st.info("ℹ️ Nenhum insight relevante identificado com os filtros atuais")
-    
-    # Métricas complementares
-    st.markdown("---")
-    st.markdown("### 📈 Métricas Complementares")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.metric(
-            "🔄 Clientes Recorrentes",
-            f"{kpis['recurring_customers']:,}",
-            f"{kpis['recurrence_rate']:.1f}%",
-            help="Clientes que compraram mais de uma vez"
-        )
-    
-    with col2:
-        items_per_order = kpis['total_items'] / kpis['total_orders'] if kpis['total_orders'] > 0 else 0
-        st.metric(
-            "📦 Itens por Pedido",
-            f"{items_per_order:.1f}",
-            help="Média de itens por pedido"
-        )
-    
-    with col3:
-        if len(kpis['monthly_data']) >= 2:
-            last_growth = kpis['monthly_data'].iloc[-1].get('revenue_growth', 0)
-            st.metric(
-                "📊 Crescimento Mensal",
-                f"{last_growth:.1f}%",
-                delta=f"{last_growth:.1f}%",
-                help="Variação percentual do último mês"
-            )
-        else:
-            st.metric("📊 Crescimento Mensal", "N/A")
-    
-    with col4:
-        avg_item_value = kpis['total_revenue'] / kpis['total_items'] if kpis['total_items'] > 0 else 0
-        st.metric(
-            "💎 Valor Médio/Item",
-            f"R$ {avg_item_value:.2f}",
-            help="Valor médio por item vendido"
-        )
-    
-    # Dados detalhados
-    st.markdown("---")
-    st.markdown("### 📊 Dados Detalhados")
-    
-    detail_tab1, detail_tab2, detail_tab3 = st.tabs(["📦 Produtos", "🗺️ Geografia", "💳 Pagamentos"])
-    
-    with detail_tab1:
-        st.dataframe(top_products, use_container_width=True, hide_index=True)
-    
-    with detail_tab2:
-        st.dataframe(state_data, use_container_width=True, hide_index=True)
-    
-    with detail_tab3:
-        st.dataframe(payment_data, use_container_width=True, hide_index=True)
-    
-    # Rodapé
-    st.markdown("---")
-    st.markdown(f"""
-    <div style='text-align: center; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                padding: 1.5rem; border-radius: 10px; color: #666;'>
-        <p style='margin: 0; font-size: 1.1rem; font-weight: bold; color: #1e3c72;'>
-            📊 Sistema de Informações Gerenciais para E-commerce
-        </p>
-        <p style='margin: 0.5rem 0;'>
-            Desenvolvido por <strong>Ingrid Mônica da Silva Bezerra</strong> e <strong>Karla Cristina de Sousa Araújo</strong>
-        </p>
-        <p style='margin: 0.5rem 0;'>
-            IFAL - Instituto Federal de Alagoas | Disciplina: Sistemas de Informações Gerenciais | 2025.1
-        </p>
-        <p style='margin: 0.5rem 0 0 0; font-size: 0.9rem;'>
-            Professora: <strong>Wladia Bessa</strong> | Última atualização: {datetime.now().strftime('%d/%m/%Y %H:%M')}
-        </p>
+    card_html = """
+    <div style="
+        background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        min-height:90px;
+    ">
+        <div style="font-size: 18px; margin-bottom: 4px;">{icon} {title}</div>
+        <div style="font-size: 22px; font-weight: 700; margin-top: 6px;">{value}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """
+
+    with col1:
+        st.markdown(card_html.format(icon="🛒", title="Total de Pedidos", value=f"{k['total_orders']:,}"), unsafe_allow_html=True)
+    with col2:
+        st.markdown(card_html.format(icon="💰", title="Receita Total", value=f"R$ {k['total_revenue']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")), unsafe_allow_html=True)
+    with col3:
+        st.markdown(card_html.format(icon="👥", title="Clientes Únicos", value=f"{k['total_customers']:,}"), unsafe_allow_html=True)
+    with col4:
+        st.markdown(card_html.format(icon="📦", title="Itens Vendidos", value=f"{k['total_items']:,}"), unsafe_allow_html=True)
+    with col5:
+        st.markdown(card_html.format(icon="🎯", title="Ticket Médio", value=f"R$ {k['avg_ticket']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")), unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    tab1, tab2, tab3, tab4 = st.tabs(["📈 Evolução Temporal", "🏆 Produtos", "🗺️ Geografia", "💳 Pagamentos"])
+
+    with tab1:
+        st.subheader("📅 Evolução de Receita e Pedidos (Mensal)")
+        monthly = k['monthly'].copy() if 'monthly' in k else pd.DataFrame()
+        if len(monthly) == 0:
+            st.info("Sem dados suficientes para mostrar séries temporais.")
+        else:
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x=monthly['period'], y=monthly['orders'], name='Pedidos', marker_color='#1e3c72'), secondary_y=False)
+            fig.add_trace(go.Scatter(x=monthly['period'], y=monthly['revenue'], name='Receita (R$)', mode='lines+markers', line=dict(color='#ff7f0e', width=3)), secondary_y=True)
+            fig.update_layout(hovermode='x unified', height=420, legend=dict(orientation='h'))
+            fig.update_xaxes(tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("#### Pedidos por Dia")
+        df_days = df_filtered.groupby(df_filtered['order_date'].dt.date).agg(revenue=('total_value','sum'), orders=('order_id','nunique')).reset_index()
+        if len(df_days) == 0:
+            st.info("Sem dados para mostrar por dia.")
+        else:
+            fig2 = px.line(df_days, x='order_date', y='revenue', labels={'order_date':'Data','revenue':'Receita (R$)'})
+            fig2.update_traces(line_color='#0b6bf7', line_width=2)
+            st.plotly_chart(fig2, use_container_width=True)
+
+    with tab2:
+        st.subheader("🏆 Performance por Categoria/Produto")
+        if 'product_category' in df_filtered.columns:
+            prod = df_filtered.groupby('product_category').agg(revenue=('total_value','sum'), orders=('order_id','nunique'), qty=('quantity','sum')).reset_index().sort_values('revenue', ascending=False)
+            figp = px.bar(prod.head(8), x='revenue', y='product_category', orientation='h', labels={'revenue':'Receita','product_category':'Categoria'}, color='revenue', color_continuous_scale='Blues')
+            figp.update_layout(height=420, yaxis={'categoryorder':'total ascending'})
+            st.plotly_chart(figp, use_container_width=True)
+
+            st.markdown("#### Tabela de categorias")
+            prod_display = prod.copy()
+            prod_display['revenue'] = prod_display['revenue'].map(lambda x: f"R$ {x:,.2f}")
+            st.dataframe(prod_display.reset_index(drop=True), use_container_width=True)
+        else:
+            st.info("Coluna 'product_category' não encontrada.")
+
+    with tab3:
+        st.subheader("🗺️ Análise Geográfica")
+        if 'customer_state' in df_filtered.columns:
+            geo = df_filtered.groupby('customer_state').agg(revenue=('total_value','sum'), orders=('order_id','nunique')).reset_index().sort_values('revenue', ascending=False)
+            figg = px.bar(geo.head(10), x='customer_state', y='revenue', labels={'customer_state':'Estado','revenue':'Receita (R$)'}, color='revenue', color_continuous_scale='Purples')
+            figg.update_layout(height=420)
+            st.plotly_chart(figg, use_container_width=True)
+        else:
+            st.info("Coluna 'customer_state' não encontrada.")
+
+    with tab4:
+        st.subheader("💳 Métodos de Pagamento")
+        if 'payment_method' in df_filtered.columns:
+            pay = df_filtered.groupby('payment_method').agg(orders=('order_id','nunique'), revenue=('total_value','sum')).reset_index().sort_values('orders', ascending=False)
+            figpay = px.pie(pay, names='payment_method', values='orders', hole=0.45)
+            figpay.update_traces(textposition='outside', textinfo='percent+label', pull=[0.05 if i==0 else 0 for i in range(len(pay))])
+            st.plotly_chart(figpay, use_container_width=True)
+
+            st.markdown("#### Receita por método")
+            figpay2 = px.bar(pay, x='payment_method', y='revenue', labels={'revenue':'Receita (R$)','payment_method':'Método'}, color='revenue', color_continuous_scale='Greens')
+            figpay2.update_layout(height=380, xaxis_tickangle=-45)
+            st.plotly_chart(figpay2, use_container_width=True)
+        else:
+            st.info("Coluna 'payment_method' não encontrada.")
+
+    st.markdown("---")
+    st.markdown("### 🔎 Insights Automáticos")
+
+    def insight_card(title, description, icon="💡", color="#1e3c72"):
+        return f"""
+        <div style="
+            background: linear-gradient(135deg, rgba(30,60,114,0.12), rgba(42,82,152,0.12));
+            border-left: 6px solid {color};
+            padding: 18px 20px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            height: 100%;
+        ">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size: 32px;">{icon}</div>
+                <div>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom:4px;">{title}</div>
+                    <div style="font-size: 14px; opacity: 0.85; line-height: 1.4;">{description}</div>
+                </div>
+            </div>
+        </div>
+        """
+
+    if 'product_category' in df_filtered.columns:
+        vc = df_filtered['product_category'].value_counts()
+        top_cat = vc.index[0] if len(vc) > 0 else "N/A"
+        count_top = int(vc.iloc[0]) if len(vc) > 0 else 0
+        bottom_cat = vc.index[-1] if len(vc) > 0 else "N/A"
+        count_bottom = int(vc.iloc[-1]) if len(vc) > 0 else 0
+        concentration = (count_top / len(df_filtered) * 100) if len(df_filtered) > 0 else 0
+        categories_count = df_filtered['product_category'].nunique()
+    else:
+        top_cat = bottom_cat = "N/A"
+        count_top = count_bottom = 0
+        concentration = 0
+        categories_count = 0
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown(insight_card("Categoria Líder de Vendas",
+                                f"A categoria {top_cat} foi a mais vendida no período, com {count_top} vendas.",
+                                icon="🏆", color="#4CAF50"),
+                    unsafe_allow_html=True)
+    with c2:
+        st.markdown(insight_card("Categoria com Menor Desempenho",
+                                f"A categoria {bottom_cat} teve o menor volume, com apenas {count_bottom} vendas.",
+                                icon="📉", color="#E53935"),
+                    unsafe_allow_html=True)
+    with c1:
+        st.markdown(insight_card("Concentração de Vendas",
+                                f"A categoria líder representa {concentration:.1f}% de todas as vendas analisadas.",
+                                icon="🎯", color="#FF9800"),
+                    unsafe_allow_html=True)
+    with c2:
+        st.markdown(insight_card("Diversidade no Mix de Produtos",
+                                f"O dataset possui {categories_count} categorias diferentes vendidas.",
+                                icon="📦", color="#3F51B5"),
+                    unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown(f"<div style='text-align:center;color:var(--muted)'>Dashboard gerado em {datetime.now().strftime('%d/%m/%Y %H:%M')} • {company_name}</div>", unsafe_allow_html=True)
+
 
 if __name__ == "__main__":
     main()
