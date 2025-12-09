@@ -188,4 +188,4 @@ def generate_smart_insights(kpis: dict, df: pd.DataFrame):
     insights.sort(key=lambda x: x['priority'])
     
     # Retornar apenas os 5 mais relevantes
-    return insights[:5]
+    return insights[:4]
