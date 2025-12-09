@@ -3,34 +3,63 @@ venv/
 ENV/
 env/
 .venv/
+env.bak/
+venv.bak/
 
 # Arquivos do Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
 *.pyc
 *.pyo
 *.pyd
 *.pdb
 
+# Distribuição / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
 # Configs locais
 *.env
+.env.local
+.env.*.local
 *.ini
+config.local.py
 
 # Cache do Streamlit
 .streamlit/
+.streamlit/secrets.toml
 
 # Arquivos gerados automaticamente
 *.db
 *.sqlite
+*.sqlite3
 *.log
+*.csv
+*.xlsx
+*.xls
 
-# VSCode
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDEs
 .vscode/
-
-# Jupyter notebooks 
-.ipynb_checkpoints/
-
-# macOS
-.DS_Store
-
-# Windows
-Thumbs.db
+.idea/

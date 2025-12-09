@@ -1,211 +1,186 @@
-# 📊 Sistema de Informações Gerenciais para E-commerce
+# 📊 SIG E-commerce - Dashboard Gerencial
 
-### *Dashboard Interativo em Python + Streamlit (Projeto Final SIGE – IFAL)*
-
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.41+-red.svg)](https://streamlit.io/)
-[![Pandas](https://img.shields.io/badge/Pandas-2.2.3-yellow.svg)](https://pandas.pydata.org/)
-[![Plotly](https://img.shields.io/badge/Plotly-5.15-purple.svg)](https://plotly.com/python/)
-[![IFAL](https://img.shields.io/badge/IFAL-2025.1-green.svg)](https://www2.ifal.edu.br/)
-
-> Dashboard analítico desenvolvido para transformar dados brutos de e-commerce em **informações estratégicas**, com KPIs dinâmicos, gráficos interativos e design profissional empresarial.
+Sistema de Informações Gerenciais para análise de dados de e-commerce com insights automáticos e visualizações interativas.
 
 ![Dashboard Preview](assets/dashboard.png)
 
----
+## Funcionalidades
 
-# Sobre o Projeto
+### 📊 Análises Completas
+- **KPIs em tempo real**: Receita, pedidos, clientes, ticket médio
+- **Evolução temporal**: Gráficos mensais e diários
+- **Análise geográfica**: Performance por estado
+- **Performance de produtos**: Ranking de categorias
 
-Este sistema foi desenvolvido como **projeto final da disciplina Sistemas de Informações Gerenciais (SIGE)** do **Instituto Federal de Alagoas (IFAL)**, sob orientação da **Professora Wládia Bessa**.
+### 💡 Insights Automáticos
+- Detecção de crescimento/queda
+- Identificação de oportunidades
+- Alertas estratégicos
+- Recomendações baseadas em dados
 
-O objetivo é demonstrar, na prática, como um **SIG** coleta, processa, armazena e apresenta informações para **apoio à tomada de decisão**, através de um dashboard totalmente funcional.
+### 🔍 Recursos
+- Filtros avançados (período, estados)
+- Gráficos interativos (Plotly)
+- Exportação de dados
+- Suporte multi-empresa
+- Interface responsiva
 
-Ele permite:
 
-* Analisar pedidos, vendas, clientes e categorias
-* Observar tendências temporais
-* Filtrar dados por estado e intervalo de datas
-* Gerar insights automaticamente
-* Visualizar KPIs com design empresarial moderno
+## 🌐 Deploy
+Acesse: <https://dashboardgerencial.streamlit.app>
 
----
+## Instalação
 
-# Autoras
+### Pré-requisitos
+- Python 3.8 ou superior
+- pip (gerenciador de pacotes Python)
 
-* **Ingrid Mônica da Silva Bezerra**
-* **Karla Cristina de Sousa Araújo**
+### Passo a passo
 
-**Instituição:** IFAL – Instituto Federal de Alagoas
-**Semestre:** 2025.1
-**Disciplina:** Sistemas de Informações Gerenciais
-
----
-
-# Funcionalidades
-
-## KPIs (Indicadores Principais)
-
-O dashboard exibe automaticamente:
-
-* **🛒 Total de Pedidos**
-* **💰 Receita Total**
-* **👥 Clientes Únicos**
-* **📦 Itens Vendidos**
-* **🎯 Ticket Médio**
-
-## Visualizações Interativas (Plotly)
-
-* Gráfico de **volume de pedidos por mês**
-* Gráfico de **receita total mensal**
-* **Top 5 Categorias** por volume e receita
-* Distribuição de **métodos de pagamento**
-* Mapa por estado (UF) com resumo de vendas
-
-## Dados e Filtros
-
-* Filtro por **intervalo de datas**
-* Filtro por **estado (UF)**
-* Campo para inserir o **nome da empresa**
-* Upload de CSV com correção automática de encoding
-
-## Interface
-
-* Tema **claro e escuro**
-* Cards modernos em grid **2x2**
-* Texto sempre legível (corrigido via CSS com tratamento automático)
-* Layout responsivo para desktop e mobile
-
----
-
-# Insights Automáticos
-
-O sistema identifica padrões relevantes, como:
-
-* Crescimento ou queda no volume de vendas
-* Categorias de maior impacto
-* Métodos de pagamento mais usados
-* Estados com maior concentração de clientes
-* Sazonalidade e comportamento das compras
-
----
-
-# Tecnologias Utilizadas
-
-| Tecnologia    | Versão | Utilização               |
-| ------------- | ------ | ------------------------ |
-| **Python**    | 3.10   | Backend do dashboard     |
-| **Streamlit** | 1.41.1 | Interface e visualização |
-| **Pandas**    | 2.2.3  | Processamento de dados   |
-| **NumPy**     | 1.25.2 | Cálculos numéricos       |
-| **Plotly**    | 5.15.0 | Gráficos interativos     |
-
----
-
-# Instalação
-
-## 1️⃣ Clonar o Repositório
-
+1. **Clone o repositório**
 ```bash
 git clone https://github.com/seu-usuario/sig-ecommerce-dashboard.git
 cd sig-ecommerce-dashboard
 ```
 
-## 2️⃣ Criar Ambiente Virtual
-
+2. **Crie um ambiente virtual**
 ```bash
 python -m venv venv
-venv\Scripts\activate         # Windows
+
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
 ```
 
-## 3️⃣ Instalar Dependências
-
+3. **Instale as dependências**
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-# ▶️ Como Executar
-
+4. **Execute a aplicação**
 ```bash
 streamlit run app.py
 ```
 
-O dashboard abrirá automaticamente em:
-
+5. **Acesse no navegador**
 ```
 http://localhost:8501
 ```
 
----
-
-# Estrutura de Dados (CSV)
-
-## Colunas Obrigatórias
-
-| Coluna           | Tipo   | Descrição           |
-| ---------------- | ------ | ------------------- |
-| order_id         | String | ID único do pedido  |
-| customer_id      | String | ID do cliente       |
-| order_date       | Date   | Data do pedido      |
-| product_category | String | Categoria           |
-| product_price    | Float  | Preço unitário      |
-| quantity         | Int    | Quantidade          |
-| total_value      | Float  | Valor total         |
-| customer_state   | String | Estado              |
-| customer_city    | String | Cidade              |
-| payment_method   | String | Método de pagamento |
-
-### Separadores aceitos
-
-`,  ;  |  \t  (tab)`
-
-### Encodings aceitos
-
-UTF-8, Latin1, ISO-8859-1, Windows-1252
-
----
-
-# Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
 ```
 sig-ecommerce-dashboard/
 │
-├── app.py
-├── README.md
-├── requirements.txt
+├── app.py                          # Arquivo principal
+├── README.md                       # Documentação
+├── requirements.txt                # Dependências
+├── LICENSE                         # Licença
+│
+├── config/
+│   ├── __init__.py
+│   └── settings.py                 # Configurações gerais
+│
+├── utils/
+│   ├── __init__.py
+│   ├── data_loader.py              # Carregamento de CSV
+│   ├── data_processor.py           # Processamento de dados
+│   └── sample_data.py              # Dados de exemplo
+│
+├── analytics/
+│   ├── __init__.py
+│   └── kpis.py                     # Cálculo de KPIs
+│
+├── components/
+│   ├── __init__.py
+│   ├── header.py                   # Cabeçalho
+│   ├── sidebar.py                  # Barra lateral
+│   ├── home_page.py                # Página inicial
+│   ├── kpi_cards.py                # Cards de KPIs
+│   ├── charts.py                   # Gráficos
+│   └── insights_cards.py           # Cards de insights
+│
+├── styles/
+│   ├── __init__.py
+│   └── custom_css.py               # Estilos CSS
 │
 └── assets/
-│   └── dashboard.png
+    └── dashboard.png               # Imagem de preview
 ```
 
+## Formato do CSV
+
+Seu arquivo CSV deve conter as seguintes colunas:
+
+| Coluna | Tipo | Descrição | Exemplo |
+|--------|------|-----------|---------|
+| `order_id` | Texto | ID único do pedido | ORD_000001 |
+| `customer_id` | Texto | ID único do cliente | CUST_000123 |
+| `order_date` | Data | Data do pedido | 2024-01-15 |
+| `product_category` | Texto | Categoria do produto | Eletrônicos |
+| `product_price` | Número | Preço unitário | 1299.90 |
+| `quantity` | Inteiro | Quantidade | 2 |
+| `total_value` | Número | Valor total | 2599.80 |
+| `customer_state` | Texto | Estado (UF) | SP |
+| `customer_city` | Texto | Cidade | São Paulo |
+| `payment_method` | Texto | Forma de pagamento | PIX |
+
+### Exemplo de CSV
+
+```csv
+order_id,customer_id,order_date,product_category,product_price,quantity,total_value,customer_state,customer_city,payment_method
+ORD_000001,CUST_000123,2024-01-15,Eletrônicos,1299.90,2,2599.80,SP,São Paulo,PIX
+ORD_000002,CUST_000456,2024-01-16,Moda,250.50,1,250.50,RJ,Rio de Janeiro,Cartão de Crédito
+ORD_000003,CUST_000789,2024-01-17,Casa e Decoração,450.00,3,1350.00,MG,Belo Horizonte,Boleto
+```
+
+**Download**: Um arquivo de exemplo está disponível na página inicial do dashboard.
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Streamlit** 1.41.1 - Framework web
+- **Pandas** 2.2.3 - Manipulação de dados
+- **Plotly** 5.15.0 - Visualizações interativas
+- **NumPy** 1.26.4 - Computação numérica
+
+## 💻 Desenvolvimento
+
+### Estrutura Modular
+
+O projeto foi desenvolvido com arquitetura modular para facilitar manutenção e escalabilidade:
+
+- **config/**: Configurações centralizadas
+- **utils/**: Utilitários reutilizáveis
+- **analytics/**: Lógica de negócio e análises
+- **components/**: Componentes visuais da interface
+- **styles/**: Estilos e temas
+
+### Executar em modo de desenvolvimento
+
+```bash
+streamlit run app.py --server.runOnSave true
+```
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## Autores
+
+- **Ingrid Mônica** - *Desenvolvimento* - [GitHub](https://github.com/ingridmonica)
+- **Karla Cristina** - *Desenvolvimento* - [GitHub](https://github.com/karlaaraujo)
+
+## Contexto Acadêmico
+
+Projeto desenvolvido para a disciplina de Sistemas de Informações Gerenciais do curso de Sistemas de Informação.
+
+**Instituição**: Instituto Federal de Alagoas (IFAL)  
+**Ano**: 2025
+
 ---
-
-# 📚 Fundamentação Teórica – SIG
-
-Um **Sistema de Informações Gerenciais (SIG)** transforma dados brutos em informações úteis para apoio gerencial.
-
-### Etapas aplicadas neste projeto
-
-1. **Coleta** – Upload de CSV
-2. **Processamento** – Pandas limpa e valida
-3. **Armazenamento** – DataFrame estruturado
-4. **Distribuição** – Dashboard Streamlit
-5. **Decisão** – KPIs e insights acionáveis
-
----
-
-# 📄 Licença
-
-Este projeto está sob licença **MIT**.
-
----
-
-
 <div align="center">
-
- Desenvolvido para o Projeto Final SIGE – IFAL 2025.1  <br>
+Desenvolvido para o Projeto Final SIGE – IFAL 2025.1  <br>
 **Sistema de Informações Gerenciais para E-commerce**
-
 </div>
-
