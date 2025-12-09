@@ -15,7 +15,7 @@ def render_home_page():
     
     st.markdown("## Funcionalidades do Sistema")
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2= st.columns(2)
     
     with col1:
         st.markdown("""
@@ -45,19 +45,7 @@ def render_home_page():
         </div>
         """, unsafe_allow_html=True)
     
-    with col3:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, rgb(34 84 129) 0%, rgb(41 188 195) 100%); 
-                    padding: 20px; border-radius: 10px; color: white; height: 280px;">
-            <h3 style="margin-top: 0;">🔍 Recursos</h3>
-            <ul style="line-height: 1.8;">
-                <li>Filtros avançados</li>
-                <li>Gráficos interativos</li>
-                <li>Exportação de dados</li>
-                <li>Multi-empresa</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
+
     
     st.markdown("<br>", unsafe_allow_html=True)
     
