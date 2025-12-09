@@ -81,18 +81,25 @@ def main():
                 "Período:",
                 value=(min_date, max_date),
                 min_value=min_date,
-                max_value=max_date
+                max_value=max_date,
+                format="DD/MM/YYYY"  # ← Formato brasileiro
             )
         with col2:
             states = sorted(df['customer_state'].dropna().unique().tolist()) if 'customer_state' in df.columns else []
             selected_states = st.multiselect("Estados:", options=states, default=states)
-    
-    # Aplicar filtros
-    try:
+
+    # Validar seleção de datas
+    if isinstance(date_range, tuple) and len(date_range) == 2:
         start_date, end_date = date_range
-    except:
+    elif isinstance(date_range, tuple) and len(date_range) == 1:
+        # Usuário selecionou apenas uma data
+        st.warning("⚠️ Por favor, selecione a data final do período.")
+        return
+    else:
+        # Fallback: usar data única para ambas
         start_date = end_date = date_range
-    
+
+    # Aplicar filtros
     df_filtered = df[
         (df['order_date'] >= pd.to_datetime(start_date)) &
         (df['order_date'] <= pd.to_datetime(end_date))
