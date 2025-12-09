@@ -21,7 +21,6 @@ Sistema de Informações Gerenciais para análise de dados de e-commerce com ins
 ### 🔍 Recursos
 - Filtros avançados (período, estados)
 - Gráficos interativos (Plotly)
-- Exportação de dados
 - Suporte multi-empresa
 - Interface responsiva
 
