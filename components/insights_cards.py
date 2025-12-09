@@ -1,8 +1,13 @@
 import streamlit as st
 from datetime import datetime
+from analytics.insights import generate_smart_insights  # ← ADICIONAR IMPORT
 
-def insight_card(title, description, icon="💡", color="#1e3c72"):
+def insight_card(title, description, icon="💡", color="#1e3c72", action=None):
     """Gera HTML para um card de insight"""
+    action_html = ""
+    if action:
+        action_html = f'<div style="font-size: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.1); font-weight: 600;">💡 Ação: {action}</div>'
+    
     return f"""
     <div style="
         background: linear-gradient(135deg, rgba(30,60,114,0.12), rgba(42,82,152,0.12));
@@ -13,81 +18,83 @@ def insight_card(title, description, icon="💡", color="#1e3c72"):
         box-shadow: 0 3px 10px rgba(0,0,0,0.08);
         height: 100%;
     ">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div style="font-size: 32px;">{icon}</div>
-            <div>
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="font-size: 32px; flex-shrink: 0;">{icon}</div>
+            <div style="flex: 1;">
                 <div style="font-size: 18px; font-weight: 600; margin-bottom:4px;">{title}</div>
                 <div style="font-size: 14px; opacity: 0.85; line-height: 1.4;">{description}</div>
+                {action_html}
             </div>
         </div>
     </div>
     """
 
-def render_insights_section(df_filtered, company_name):
+def render_insights_section(df_filtered, company_name, kpis):  # ← ADICIONAR kpis
     """Renderiza a seção de insights automáticos"""
     st.markdown("---")
-    st.markdown("### 🔎 Insights Automáticos")
+    st.markdown("###  Insights Automáticos")
     
-    if 'product_category' in df_filtered.columns:
-        vc = df_filtered['product_category'].value_counts()
-        top_cat = vc.index[0] if len(vc) > 0 else "N/A"
-        count_top = int(vc.iloc[0]) if len(vc) > 0 else 0
-        bottom_cat = vc.index[-1] if len(vc) > 0 else "N/A"
-        count_bottom = int(vc.iloc[-1]) if len(vc) > 0 else 0
-        concentration = (count_top / len(df_filtered) * 100) if len(df_filtered) > 0 else 0
-        categories_count = df_filtered['product_category'].nunique()
+    # Gerar insights inteligentes
+    insights = generate_smart_insights(kpis, df_filtered)
+    
+    # Mapear cores por tipo
+    color_map = {
+        'success': '#4CAF50',
+        'warning': '#FF9800',
+        'info': '#2196F3',
+        'danger': '#E53935'
+    }
+    
+    # Renderizar insights em grid 2 colunas
+    if len(insights) > 0:
+        # Primeira linha (2 insights)
+        if len(insights) >= 2:
+            c1, c2 = st.columns(2)
+            with c1:
+                i = insights[0]
+                st.markdown(
+                    insight_card(
+                        i['title'],
+                        i['text'],
+                        icon=i['icon'],
+                        color=color_map.get(i['type'], '#1e3c72'),
+                        action=i.get('action')
+                    ),
+                    unsafe_allow_html=True
+                )
+            with c2:
+                i = insights[1]
+                st.markdown(
+                    insight_card(
+                        i['title'],
+                        i['text'],
+                        icon=i['icon'],
+                        color=color_map.get(i['type'], '#1e3c72'),
+                        action=i.get('action')
+                    ),
+                    unsafe_allow_html=True
+                )
+        
+        # Segunda linha (até 3 insights)
+        remaining = insights[2:]
+        if len(remaining) > 0:
+            cols = st.columns(min(len(remaining), 3))
+            for idx, i in enumerate(remaining[:3]):
+                with cols[idx]:
+                    st.markdown(
+                        insight_card(
+                            i['title'],
+                            i['text'],
+                            icon=i['icon'],
+                            color=color_map.get(i['type'], '#1e3c72'),
+                            action=i.get('action')
+                        ),
+                        unsafe_allow_html=True
+                    )
     else:
-        top_cat = bottom_cat = "N/A"
-        count_top = count_bottom = 0
-        concentration = 0
-        categories_count = 0
+        st.info("Nenhum insight significativo encontrado para o período selecionado.")
     
-    c1, c2 = st.columns(2)
-    
-    with c1:
-        st.markdown(
-            insight_card(
-                "Categoria Líder de Vendas",
-                f"A categoria {top_cat} foi a mais vendida no período, com {count_top} vendas.",
-                icon="🏆",
-                color="#4CAF50"
-            ),
-            unsafe_allow_html=True
-        )
-    
-    with c2:
-        st.markdown(
-            insight_card(
-                "Categoria com Menor Desempenho",
-                f"A categoria {bottom_cat} teve o menor volume, com apenas {count_bottom} vendas.",
-                icon="📉",
-                color="#E53935"
-            ),
-            unsafe_allow_html=True
-        )
-    
-    with c1:
-        st.markdown(
-            insight_card(
-                "Concentração de Vendas",
-                f"A categoria líder representa {concentration:.1f}% de todas as vendas analisadas.",
-                icon="🎯",
-                color="#FF9800"
-            ),
-            unsafe_allow_html=True
-        )
-    
-    with c2:
-        st.markdown(
-            insight_card(
-                "Diversidade no Mix de Produtos",
-                f"O dataset possui {categories_count} categorias diferentes vendidas.",
-                icon="📦",
-                color="#3F51B5"
-            ),
-            unsafe_allow_html=True
-        )
-    
+    # Footer
     st.markdown("---")
     st.markdown(
         f"<div style='text-align:center;color:var(--muted)'>"

@@ -165,8 +165,9 @@ def main():
             st.error(f"Erro ao renderizar aba de pagamentos: {e}")
     
     # Insights
+  
     try:
-        render_insights_section(df_filtered, company_name)
+        render_insights_section(df_filtered, company_name, kpis)  # ← ADICIONAR kpis
     except Exception as e:
         st.error(f"Erro ao renderizar insights: {e}")
 
